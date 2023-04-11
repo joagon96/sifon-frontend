@@ -1,0 +1,13 @@
+version: "3.2"
+services:
+  frontend:
+    build: .
+    command: npm run serve
+    volumes:
+      - .:/vgn-sifon-frontend
+      - node_modules:/vgn-sifon-frontend/node_modules
+    ports:
+      - 8080:8080
+
+volumes:
+  node_modules:
