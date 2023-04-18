@@ -116,7 +116,7 @@ export default {
       });
     },
     getRepartos () {
-      axios.get(Config.API_URL + 'get/Reparto').then(response => {
+      axios.get(Config.API_URL + 'get/Reparto',{headers: {"Authorization": localStorage.token}}).then(response => {
       console.log(response.data);
       this.repartos = Object.freeze(response.data);
       });

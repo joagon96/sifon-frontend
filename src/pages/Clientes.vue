@@ -103,7 +103,7 @@ export default {
       });
     },
     getClientes () {
-      axios.get(Config.API_URL + 'get/Cliente').then(response => {
+      axios.get(Config.API_URL + 'get/Cliente',{headers: {"Authorization": localStorage.token}}).then(response => {
       console.log(response.data);
       this.clientes = Object.freeze(response.data);
     });

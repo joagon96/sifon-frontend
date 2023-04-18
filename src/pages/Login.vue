@@ -28,6 +28,11 @@ import axios from 'axios'
 import {Config} from '../config.js'
 
 export default {
+  mounted() {
+    localStorage.setItem('token', "null");
+    localStorage.setItem('role', "null");
+    localStorage.setItem('username', "null");
+  },
   props: {
     cardUserImage: {
       type: String,
@@ -57,7 +62,11 @@ export default {
         }).then(response => {
           if (!response.data.error){
             const role = response.data.role
+            const username = response.data.username
+            const token = response.data.token
             localStorage.setItem('role', role)
+            localStorage.setItem('username', username)
+            localStorage.setItem('token', `Bearer: ` + token)
             if (role === 'admin'){
               console.log("resumen")
               this.$router.push({name: 'Resumen'})

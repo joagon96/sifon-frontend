@@ -1,4 +1,4 @@
 // Forms
-import EditProfileForm from "../pages/UserProfile/EditProfileForm.vue";
-
-export { EditProfileForm };
+export function isValidJwt (jwt) {
+    return (!jwt || jwt.split('.').length < 3) 
+}

@@ -96,7 +96,7 @@ export default {
       });
     },
     getZonas () {
-      axios.get(Config.API_URL + 'get/Zona').then(response => {
+      axios.get(Config.API_URL + 'get/Zona',{headers: {"Authorization": localStorage.token}}).then(response => {
       console.log(response.data);
       this.zonas = Object.freeze(response.data);
       });
