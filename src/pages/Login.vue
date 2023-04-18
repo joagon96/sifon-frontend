@@ -6,15 +6,19 @@
 
     <md-card-content>
       <h4 class="card-title">¡Bienvenido!</h4>
-        <md-field>
+      <div class="md-layout md-gutter md-alignment-center">
+        <div class="md-layout-item md-small-size-100 md-size-20">
+          <md-field>
             <label>Usuario</label>
-        <md-input placeholder="Usuario" v-model="username" type="text"></md-input>
-        </md-field>
-        <md-field>
-            <label>Contraseña</label>
-            <md-input placeholder="Contraseña" v-model="password" type="text"></md-input>
-        </md-field>
-      <md-button class="md-round md-success" @click="login()">Login</md-button>
+          <md-input placeholder="Usuario" v-model="username" type="text"></md-input>
+          </md-field>
+          <md-field>
+              <label>Contraseña</label>
+              <md-input placeholder="Contraseña" v-model="password" type="password" @keyup.enter="login(username, password)"></md-input>
+          </md-field>
+        </div>
+      </div>
+      <md-button class="md-round md-info" @click="login(username, password)">Login</md-button>
     </md-card-content>
   </md-card>
 </template>
@@ -24,6 +28,11 @@ import axios from 'axios'
 import {Config} from '../config.js'
 
 export default {
+  mounted() {
+    localStorage.setItem('token', "null");
+    localStorage.setItem('role', "null");
+    localStorage.setItem('username', "null");
+  },
   props: {
     cardUserImage: {
       type: String,
@@ -37,12 +46,12 @@ export default {
     };
   },
   methods: {
-      login () {
+      login (username, password) {
         var bodyFormData = new FormData();
-        bodyFormData.append('username', username) ;
-        bodyFormData.append('password', password) ;
+        bodyFormData.append('username', username);
+        bodyFormData.append('password', password);
         axios({
-            method: 'GET',
+            method: 'POST',
             url: Config.API_URL + 'login',
             data: bodyFormData,
             headers: {
@@ -51,11 +60,22 @@ export default {
                 "Access-Control-Allow-Credentials": "true",
             }
         }).then(response => {
-            const token = response.data.access_token
-            localStorage.setItem('token', token)
-            this.$router.push({name: 'Resumen'})
+          if (!response.data.error){
+            const role = response.data.role
+            const username = response.data.username
+            const token = response.data.token
+            localStorage.setItem('role', role)
+            localStorage.setItem('username', username)
+            localStorage.setItem('token', `Bearer: ` + token)
+            if (role === 'admin'){
+              console.log("resumen")
+              this.$router.push({name: 'Resumen'})
+            }else{
+              console.log("repartos")
+              this.$router.push({name: 'Repartos'})
+            }
+          }
         });
-        this.$router.push({name: 'Resumen'})
       }
   }
 };

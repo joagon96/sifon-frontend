@@ -8,6 +8,8 @@ services:
       - node_modules:/vgn-sifon-frontend/node_modules
     ports:
       - 8080:8080
+    environment:
+      - CHOKIDAR_USEPOLLING=true
 
 volumes:
   node_modules:

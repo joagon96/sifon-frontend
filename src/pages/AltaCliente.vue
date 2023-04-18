@@ -18,7 +18,7 @@
                       <md-input v-model="newClient.nombreApellido" type="text"></md-input>
                     </md-field>
                   </div>      
-                  <div class="md-layout-item md-small-size-100 md-size-100">
+                  <div class="md-layout-item md-align-center md-small-size-100 md-size-100">
                     <md-field>
                       <label>Telefono</label>
                       <md-input v-model="newClient.telefono" type="text"></md-input>

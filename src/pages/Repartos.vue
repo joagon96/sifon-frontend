@@ -19,6 +19,7 @@
                         <md-table-cell md-label="Zona">{{ item.idZona }}</md-table-cell>
                         <md-table-cell md-label="Día">{{ item.dia }}</md-table-cell>
                         <md-table-cell md-label="Repartidor">{{ item.idRepartidor }}</md-table-cell>
+                        <md-table-cell md-label="Estado">{{ item.estado }}</md-table-cell>
                         <md-table-cell md-label="Acciones">
                           <div>
                             <md-button class="md-icon-button md-fab md-warning md-raised" @click="editReparto(item.idReparto)">
@@ -115,7 +116,7 @@ export default {
       });
     },
     getRepartos () {
-      axios.get(Config.API_URL + 'get/Reparto').then(response => {
+      axios.get(Config.API_URL + 'get/Reparto',{headers: {"Authorization": localStorage.token}}).then(response => {
       console.log(response.data);
       this.repartos = Object.freeze(response.data);
       });

@@ -23,6 +23,10 @@
         <md-icon>local_shipping</md-icon>
         <p>Repartos</p>
       </sidebar-link>
+      <sidebar-link to="/Login">
+        <md-icon>logout</md-icon>
+        <p>Cerrar Sesion</p>
+      </sidebar-link>
       <!--<sidebar-link to="/typography">
         <md-icon>library_books</md-icon>
         <p>Typography</p>
