@@ -85,7 +85,7 @@ export default {
       var bodyFormData = new FormData();
       bodyFormData.append('idRepartidor', this.idDeleted) ;
       axios({
-        method: 'DELETE',
+        method: 'PUT',
         url: Config.API_URL + 'delete/delRepartidor',
         data: bodyFormData,
         headers: {

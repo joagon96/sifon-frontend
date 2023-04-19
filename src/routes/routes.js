@@ -12,8 +12,7 @@ import Repartidores from "@/pages/Repartidores.vue";
 import Clientes from "@/pages/Clientes.vue";
 import Repartos from "@/pages/Repartos.vue";
 import Login from "@/pages/Login.vue";
-import { isValidJwt } from "../pages";
-import { createRouter, createWebHistory } from "vue-router";
+import { isValidJwt, isAdmin } from "../pages";
 
 
 let loginPage = {
@@ -32,7 +31,7 @@ const routes = [
         name: "Resumen",
         component: Resumen,
         beforeEnter (to, from, next) {
-          if (isValidJwt(localStorage.token)) {
+          if (!isValidJwt(localStorage.token) || !isAdmin(localStorage.role)) {
             next('/login')
           } else {
             next()
@@ -45,7 +44,7 @@ const routes = [
         props: true,
         component: AltaCliente,
         beforeEnter (to, from, next) {
-          if (isValidJwt(localStorage.token)) {
+          if (!isValidJwt(localStorage.token) || !isAdmin(localStorage.role)) {
             next('/login')
           } else {
             next()
@@ -58,7 +57,7 @@ const routes = [
         props: true,
         component: AltaRepartidor,
         beforeEnter (to, from, next) {
-          if (isValidJwt(localStorage.token)) {
+          if (!isValidJwt(localStorage.token) || !isAdmin(localStorage.role)) {
             next('/login')
           } else {
             next()
@@ -71,7 +70,7 @@ const routes = [
         props: true,
         component: AltaZonas,
         beforeEnter (to, from, next) {
-          if (isValidJwt(localStorage.token)) {
+          if (!isValidJwt(localStorage.token) || !isAdmin(localStorage.role)) {
             next('/login')
           } else {
             next()
@@ -83,7 +82,7 @@ const routes = [
         name: "Alta Reparto",
         component: AltaReparto,
         beforeEnter (to, from, next) {
-          if (isValidJwt(localStorage.token)) {
+          if (!isValidJwt(localStorage.token) || !isAdmin(localStorage.role)) {
             next('/login')
           } else {
             next()
@@ -95,7 +94,7 @@ const routes = [
         name: "Planilla Reparto",
         component: PlanillaReparto,
         beforeEnter (to, from, next) {
-          if (isValidJwt(localStorage.token)) {
+          if (!isValidJwt(localStorage.token) || !isAdmin(localStorage.role)) {
             next('/login')
           } else {
             next()
@@ -108,7 +107,7 @@ const routes = [
         props: true,
         component: ClientesEnReparto,
         beforeEnter (to, from, next) {
-          if (isValidJwt(localStorage.token)) {
+          if (!isValidJwt(localStorage.token) || !isAdmin(localStorage.role)) {
             next('/login')
           } else {
             next()
@@ -120,7 +119,7 @@ const routes = [
         name: "Repartidores",
         component: Repartidores,
         beforeEnter (to, from, next) {
-          if (isValidJwt(localStorage.token)) {
+          if (!isValidJwt(localStorage.token) || !isAdmin(localStorage.role)) {
             next('/login')
           } else {
             next()
@@ -132,7 +131,7 @@ const routes = [
         name: "Zonas",
         component: Zonas,
         beforeEnter (to, from, next) {
-          if (isValidJwt(localStorage.token)) {
+          if (!isValidJwt(localStorage.token) || !isAdmin(localStorage.role)) {
             next('/login')
           } else {
             next()
@@ -144,7 +143,7 @@ const routes = [
         name: "Clientes",
         component: Clientes,
         beforeEnter (to, from, next) {
-          if (isValidJwt(localStorage.token)) {
+          if (!isValidJwt(localStorage.token) || !isAdmin(localStorage.role)) {
             next('/login')
           } else {
             next()
@@ -156,7 +155,7 @@ const routes = [
         name: "Repartos",
         component: Repartos,
         beforeEnter (to, from, next) {
-          if (isValidJwt(localStorage.token)) {
+          if (!isValidJwt(localStorage.token)) {
             next('/login')
           } else {
             next()
