@@ -28,7 +28,7 @@
                             :md-active.sync="activePopup"
                             :md-backdrop="false"
                             md-title = "¿Eliminar Zona?"
-                            md-content = "La zona se borrará de la base de datos. Si algún cliente pertenece a esta zona en la planilla figurará un espacio en blanco."
+                            md-content = "La zona se borrará de la base de datos."
                             md-confirm-text="Aceptar"
                             md-cancel-text="Cancelar"
                             @md-confirm="deleteZona()"
@@ -78,11 +78,11 @@ export default {
         }
       })
     },
-    deleteZona (idZona) {
+    deleteZona () {
       var bodyFormData = new FormData();
       bodyFormData.append('idZona', this.idDeleted) ;
       axios({
-        method: 'DELETE',
+        method: 'PUT',
         url: Config.API_URL + 'delete/delZona',
         data: bodyFormData,
         headers: {
@@ -96,7 +96,7 @@ export default {
       });
     },
     getZonas () {
-      axios.get(Config.API_URL + 'get/Zona',{headers: {"Authorization": localStorage.token}}).then(response => {
+      axios.get(Config.API_URL + 'getH/Zona',{headers: {"Authorization": localStorage.token}}).then(response => {
       console.log(response.data);
       this.zonas = Object.freeze(response.data);
       });

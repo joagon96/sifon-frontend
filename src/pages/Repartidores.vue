@@ -99,7 +99,7 @@ export default {
       });
     },
     getRepartidores () {
-      axios.get(Config.API_URL + 'get/Repartidor',{headers: {"Authorization": localStorage.token}}).then(response => {
+      axios.get(Config.API_URL + 'getH/Repartidor',{headers: {"Authorization": localStorage.token}}).then(response => {
         console.log(response.data);
         this.repartidores = Object.freeze(response.data);
       });

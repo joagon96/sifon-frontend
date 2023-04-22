@@ -16,9 +16,9 @@
                   <div>
                     <md-table v-model="this.repartos" table-header-color="green">
                       <md-table-row slot="md-table-row" slot-scope="{ item }">
-                        <md-table-cell md-label="Zona">{{ item.idZona }}</md-table-cell>
+                        <md-table-cell md-label="Zona">{{ item.descripcion }}</md-table-cell>
                         <md-table-cell md-label="Día">{{ item.dia }}</md-table-cell>
-                        <md-table-cell md-label="Repartidor">{{ item.idRepartidor }}</md-table-cell>
+                        <md-table-cell md-label="Repartidor">{{ item.nomapeRep }}</md-table-cell>
                         <md-table-cell md-label="Estado">{{ item.estado }}</md-table-cell>
                         <md-table-cell md-label="Acciones">
                           <div>
@@ -102,7 +102,7 @@ export default {
       var bodyFormData = new FormData();
       bodyFormData.append('idReparto', this.idDeleted) ;
       axios({
-        method: 'DELETE',
+        method: 'PUT',
         url: Config.API_URL + 'delete/delReparto',
         data: bodyFormData,
         headers: {
@@ -116,7 +116,7 @@ export default {
       });
     },
     getRepartos () {
-      axios.get(Config.API_URL + 'get/Reparto',{headers: {"Authorization": localStorage.token}}).then(response => {
+      axios.get(Config.API_URL + 'getH/RepartoTotal',{headers: {"Authorization": localStorage.token}}).then(response => {
       console.log(response.data);
       this.repartos = Object.freeze(response.data);
       });

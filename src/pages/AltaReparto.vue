@@ -145,14 +145,12 @@ export default {
       });
     },
     getZonas() {
-      axios.get(Config.API_URL + 'get/Zona').then(response => {
-        // console.log(response.data)
+      axios.get(Config.API_URL + 'getH/Zona').then(response => {
         this.zonas = Object.freeze(response.data)
       });
     },
     getRepartidores() {
-      axios.get(Config.API_URL + 'get/Repartidor').then(response => {
-        // console.log(response.data)
+      axios.get(Config.API_URL + 'getH/Repartidor').then(response => {
         this.repartidores = Object.freeze(response.data)
       });
     },

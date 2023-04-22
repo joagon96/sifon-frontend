@@ -1,7 +1,6 @@
 import DashboardLayout from "@/pages/Layout/DashboardLayout.vue";
 
 import Resumen from "@/pages/Resumen.vue";
-import AltaCliente from "@/pages/AltaCliente.vue";
 import AltaRepartidor from "@/pages/AltaRepartidor.vue";
 import AltaZonas from "@/pages/AltaZonas.vue";
 import AltaReparto from "@/pages/AltaReparto.vue";
@@ -30,19 +29,6 @@ const routes = [
         path: "resumen",
         name: "Resumen",
         component: Resumen,
-        beforeEnter (to, from, next) {
-          if (!isValidJwt(localStorage.token) || !isAdmin(localStorage.role)) {
-            next('/login')
-          } else {
-            next()
-          }
-        }
-      },
-      {
-        path: "altaCliente",
-        name: "Alta Cliente",
-        props: true,
-        component: AltaCliente,
         beforeEnter (to, from, next) {
           if (!isValidJwt(localStorage.token) || !isAdmin(localStorage.role)) {
             next('/login')

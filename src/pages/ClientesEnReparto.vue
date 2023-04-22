@@ -16,10 +16,6 @@
             <div>
               <md-table v-model="this.clientesenreparto" table-header-color="green">
                 <md-table-row slot="md-table-row" slot-scope="{ item }">
-               <!--<md-table-row  v-for="c in clientesZonas" :key="c.idCliente">
-                  <md-table-cell>
-                    <md-checkbox v-model="x"></md-checkbox>
-                  </md-table-cell>-->
                   <md-table-cell md-label="Nombre">{{ item.nomapeCli }}</md-table-cell>
                   <md-table-cell md-label="Domicilio">{{ item.domicilio }}</md-table-cell>
                   <md-table-cell md-label="Compra 12L">{{item.com12}}</md-table-cell>
@@ -155,20 +151,6 @@ export default {
         this.clientesenreparto = Object.freeze(response.data)
       });
     },
-    // getClientesZona() {
-    //   axios({
-    //       method: 'GET',
-    //       url: Config.API_URL + 'get/ZonaxCliente/' + this.$route.params.idZona,
-    //       headers: {
-    //         "Content-Type": "application/x-www-form-urlencoded",
-    //         "Access-Control-Allow-Origin": "*",
-    //         "Access-Control-Allow-Credentials": "true"
-    //       }
-    //   }).then(response => {
-    //     this.clientesZona = Object.freeze(response.data);
-    //     console.log(this.clientesZona)
-    //   });
-    //},
     createLineaReparto() {
       var bodyFormData = new FormData();
       bodyFormData.append('idCliente', this.newlineareparto.idCliente);
