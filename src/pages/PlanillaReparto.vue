@@ -31,24 +31,6 @@
         <md-table-cell>{{ l.devSoda }}</md-table-cell>
       </md-table-row>
     </md-table>
-    <md-card>
-     <md-field>
-        <label style="padding-left: 10px" >Observaciones</label>
-      <md-textarea v-model="textarea"></md-textarea>
-     </md-field>
-     <div class="md-layout-item md-size-100 text-right">
-                <md-dialog-alert
-                  :md-active.sync="first"
-                  md-title="Guardado"
-                  md-content="Se guardaron las observaciones con exito."
-                  md-confirm-text="Aceptar"
-                    />
-                <md-button class="md-raised md-info"  @click="first = true">Guardar</md-button>
-              </div>
-
-     </md-card>
-
-      
   </div>
 </template>
 
@@ -64,7 +46,7 @@ export default {
     getClientesZona() {
       axios({
           method: 'GET',
-          url: Config.API_URL + 'get/RepartoxLineaReparto/' + 49,
+          url: Config.API_URL + 'get/RepartoxLineaReparto/' + 2,
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
             "Access-Control-Allow-Origin": "*",
