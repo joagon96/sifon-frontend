@@ -72,8 +72,8 @@
                     <md-field>
                       <label>Zona</label>
                       <md-select md-dense v-model="newClient.idZona">
-                    <md-option v-for="z in zonas" :key="z.idZona" :value="z.idZona">{{z.descripcion}}</md-option>
-                  </md-select>
+                        <md-option v-for="z in zonas" :key="z.idZona" :value="z.idZona">{{z.descripcion}}</md-option>
+                      </md-select>
                     </md-field>
                   </div>
                 </div>
@@ -225,6 +225,7 @@ export default {
     },
     openDialog(){
       this.cleanClient()
+      this.isEdit = false
       this.showDialog = true
     }
   }

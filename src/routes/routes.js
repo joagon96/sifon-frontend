@@ -1,9 +1,6 @@
 import DashboardLayout from "@/pages/Layout/DashboardLayout.vue";
 
 import Resumen from "@/pages/Resumen.vue";
-import AltaRepartidor from "@/pages/AltaRepartidor.vue";
-import AltaZonas from "@/pages/AltaZonas.vue";
-import AltaReparto from "@/pages/AltaReparto.vue";
 import PlanillaReparto from "@/pages/PlanillaReparto.vue";
 import ClientesEnReparto from "@/pages/ClientesEnReparto.vue";
 import Zonas from "@/pages/Zonas.vue";
@@ -29,44 +26,6 @@ const routes = [
         path: "resumen",
         name: "Resumen",
         component: Resumen,
-        beforeEnter (to, from, next) {
-          if (!isValidJwt(localStorage.token) || !isAdmin(localStorage.role)) {
-            next('/login')
-          } else {
-            next()
-          }
-        }
-      },
-      {
-        path: "altaRepartidor",
-        name: "Alta Repartidor",
-        props: true,
-        component: AltaRepartidor,
-        beforeEnter (to, from, next) {
-          if (!isValidJwt(localStorage.token) || !isAdmin(localStorage.role)) {
-            next('/login')
-          } else {
-            next()
-          }
-        }
-      },
-      {
-        path: "altaZona",
-        name: "Alta Zona",
-        props: true,
-        component: AltaZonas,
-        beforeEnter (to, from, next) {
-          if (!isValidJwt(localStorage.token) || !isAdmin(localStorage.role)) {
-            next('/login')
-          } else {
-            next()
-          }
-        }
-      },
-      {
-        path: "altaReparto",
-        name: "Alta Reparto",
-        component: AltaReparto,
         beforeEnter (to, from, next) {
           if (!isValidJwt(localStorage.token) || !isAdmin(localStorage.role)) {
             next('/login')

@@ -5,10 +5,9 @@
             <md-card>
                 <md-card-header data-background-color="green">
                 <div class="md-size-100">  
-                <h4 class="title md-size-80">Zonas Registradas
-                    <md-button href="#/altaZona" style="float:right" class="md-raised md-info">Crear</md-button>
-                </h4>
-                <!--<p class="category">Here is a subtitle for this table</p>-->
+                  <h4 class="title md-size-80">Zonas Registradas
+                    <md-button class="md-raised md-info md-size-20" style="float: right; margin-top: 10px" @click="openDialog()">Agregar</md-button>
+                  </h4>
                 </div>
 
                 </md-card-header>
@@ -42,6 +41,24 @@
                     </md-table>
                   </div>
                 </md-card-content>
+                <div>
+                  <md-dialog :md-active.sync="showDialog" style="z-index: 5;">
+                    <md-dialog-title>Crear zona</md-dialog-title>
+                    <div class="md-layout-item md-small-size-100 md-size-100">
+                      <div class="md-layout md-gutter">
+                        <div class="md-layout-item md-size-100">
+                          <md-field>
+                            <md-input placeholder="Ejemplo: San Nicolás Sur" v-model="newZona.descripcion" type="text"></md-input>
+                          </md-field>
+                        </div>
+                      </div>
+                    </div>
+                    <md-dialog-actions>
+                      <md-button class="md-danger" @click="closeDialog()">Cancelar</md-button>
+                      <md-button class="md-primary" @click="saveZona()">Guardar</md-button>
+                    </md-dialog-actions>
+                  </md-dialog>
+                </div>
             </md-card>
         </div>
       <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100">
@@ -62,7 +79,13 @@ export default {
     return {
       idDeleted: Number,
       zonas: [],
-      activePopup: false
+      activePopup: false,
+      newZona: {
+        idZona: null,
+        descripcion: ''
+      },
+      showDialog: false,
+      isEdit: false
     };
   },
   methods: {
@@ -71,12 +94,54 @@ export default {
       this.activePopup = true
     },
     editZona(idZona) {
-      this.$router.push({
-        name: "Alta Zona",
-        params: {
-          idSelected: idZona
-        }
+      axios.get(Config.API_URL + 'get/Zona/'+idZona).then(response => {
+        this.newZona.idZona = response.data[0].idZona
+        this.newZona.descripcion = response.data[0].descripcion
       })
+      this.isEdit = true
+      this.showDialog = true
+    },
+    saveZona(){
+      if (this.isEdit){
+        this.updateZona()
+      }else{
+        this.createZona()
+      }
+    },
+    updateZona() {
+      var bodyFormData = new FormData();
+      bodyFormData.append('idZona', this.newZona.idZona);
+      bodyFormData.append('descripcion', this.newZona.descripcion);
+      axios({
+        method: 'PUT',
+        url: Config.API_URL + 'update/modZona',
+        data: bodyFormData,
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Credentials": "true"
+        }
+      }).then(response => {
+        this.closeDialog()
+        this.getZonas()
+      });
+    },
+    createZona() {
+      var bodyFormData = new FormData();
+      bodyFormData.append('descripcionZona', this.newZona.descripcion);
+      axios({
+          method: 'POST',
+          url: Config.API_URL + 'post/upZona',
+          data: bodyFormData,
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": "true"
+          }
+      }).then(response => {
+        this.closeDialog()
+        this.getZonas()
+      });
     },
     deleteZona () {
       var bodyFormData = new FormData();
@@ -91,15 +156,26 @@ export default {
           "Access-Control-Allow-Credentials": "true"
         }
       }).then(response => {
-        console.log(response.data);
         this.getZonas()
       });
     },
     getZonas () {
       axios.get(Config.API_URL + 'getH/Zona',{headers: {"Authorization": localStorage.token}}).then(response => {
-      console.log(response.data);
       this.zonas = Object.freeze(response.data);
       });
+    },
+    cleanZona(){
+      this.newZona.idZona = null
+      this.newZona.descripcion = ''
+    },
+    closeDialog(){
+      this.showDialog = false
+      this.cleanZona()
+    },
+    openDialog(){
+      this.cleanZona()
+      this.isEdit = false
+      this.showDialog = true
     }
   }
 };
