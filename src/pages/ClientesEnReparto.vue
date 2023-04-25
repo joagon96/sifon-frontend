@@ -44,6 +44,9 @@
             </div>
           </md-card-content>
         </md-card>
+        <div class="md-size-100">
+            <md-button v-if="this.estadoReparto === 'pendiente'" class="md-raised md-info md-size-20" style="float: right; margin-top: 10px" @click="showFinDialog = true">Finalizar Reparto</md-button>
+        </div>
       </div>
       <div>
         <md-dialog :md-active.sync="showDialog" style="z-index: 5;">
@@ -180,18 +183,14 @@
       </div>
 
       <div>
-        <md-dialog :md-active.sync="showObservacion" style="z-index: 5;">
-          <md-dialog-title>Observaciones</md-dialog-title>
-          <div class="md-layout-item md-small-size-100 md-size-100">
-            <div class="md-layout md-gutter">
-              <p>aca van las observaciones</p>
-            </div>
-          </div>
-          <md-dialog-actions>
-            <md-button class="md-danger" @click="closeEditDialog()">Cancelar</md-button>
-            <md-button class="md-primary"  @click="updateLineaReparto()">Guardar</md-button>
-          </md-dialog-actions>
-        </md-dialog>
+        <md-dialog-confirm
+          :md-active.sync="showFinDialog"
+          md-title="¿Finalizar reparto?"
+          md-content="Una vez finalizado se generara una nueva planilla de reparto."
+          md-confirm-text="Aceptar"
+          md-cancel-text="Cancelar"
+          @md-cancel="showFinDialog = false"
+          @md-confirm="finishReparto()" />
       </div>
     </div>
   </div>
@@ -226,6 +225,7 @@ export default {
       },
       showDialog: false,
       showEditDialog: false,
+      showFinDialog: false,
       x: false,
       clientesZona: [],
       clientesenreparto: [],
@@ -347,6 +347,19 @@ export default {
           }
       }).then(response => {
         this.closeEditDialog()
+        this.getLineas()
+      });
+    },
+    finishReparto(){
+      axios({
+          method: 'PUT',
+          url: Config.API_URL + 'finalizar/reparto/' + this.$route.params.idReparto,
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": "true"
+          }
+      }).then(response => {
         this.getLineas()
       });
     },

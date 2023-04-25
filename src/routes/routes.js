@@ -7,6 +7,7 @@ import Zonas from "@/pages/Zonas.vue";
 import Repartidores from "@/pages/Repartidores.vue";
 import Clientes from "@/pages/Clientes.vue";
 import Repartos from "@/pages/Repartos.vue";
+import Historico from "@/pages/Historico.vue";
 import Login from "@/pages/Login.vue";
 import { isValidJwt, isAdmin } from "../pages";
 
@@ -99,6 +100,18 @@ const routes = [
         path: "repartos",
         name: "Repartos",
         component: Repartos,
+        beforeEnter (to, from, next) {
+          if (!isValidJwt(localStorage.token)) {
+            next('/login')
+          } else {
+            next()
+          }
+        }
+      },
+      {
+        path: "historico",
+        name: "Historico",
+        component: Historico,
         beforeEnter (to, from, next) {
           if (!isValidJwt(localStorage.token)) {
             next('/login')

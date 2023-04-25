@@ -18,7 +18,6 @@
                         <md-table-cell md-label="Zona">{{ item.descripcion }}</md-table-cell>
                         <md-table-cell md-label="Día">{{ item.dia }}</md-table-cell>
                         <md-table-cell md-label="Repartidor">{{ item.nomapeRep }}</md-table-cell>
-                        <md-table-cell md-label="Estado">{{ item.estado }}</md-table-cell>
                         <md-table-cell md-label="Acciones">
                           <div>
                             <md-button class="md-icon-button md-fab md-warning md-raised" @click="editReparto(item.idReparto)">
@@ -51,10 +50,10 @@
                 </md-card-content>
                 <div>
                   <md-dialog :md-active.sync="showDialog" style="z-index: 5;">
-                    <md-dialog-title>Crear cliente</md-dialog-title>
+                    <md-dialog-title>Crear Reparto</md-dialog-title>
                     <div class="md-layout-item md-small-size-100 md-size-100">
                       <div class="md-layout md-gutter">
-                        <div class="md-layout-item md-size-50">
+                        <div class="md-layout-item">
                           <md-field>
                             <label>Repartidor</label>
                             <md-select md-dense v-model="newReparto.idRepartidor">
@@ -62,7 +61,7 @@
                             </md-select>
                           </md-field>
                         </div>
-                        <div class="md-layout-item md-size-50">
+                        <div class="md-layout-item">
                           <md-field>
                             <label>Zona</label>
                             <md-select md-dense v-model="newReparto.idZona">
@@ -70,19 +69,11 @@
                             </md-select>
                           </md-field>
                         </div>
-                        <div class="md-layout-item md-size-50">
+                        <div class="md-layout-item md-size-100">
                           <md-field>
                             <label>Dia</label>
                             <md-select md-dense v-model="newReparto.dia">
                               <md-option v-for="d in dias" :key="d.id" :value="d.name">{{d.name}}</md-option>
-                            </md-select>
-                          </md-field>
-                        </div>
-                        <div v-if="this.isEdit" class="md-layout-item md-size-50">
-                          <md-field>
-                            <label>Estado</label>
-                            <md-select md-dense v-model="newReparto.estado">
-                              <md-option v-for="e in estados" :key="e.id" :value="e.name">{{e.name}}</md-option>
                             </md-select>
                           </md-field>
                         </div>
@@ -120,7 +111,6 @@ export default {
         idZona: null,
         idRepartidor: null,
         dia: null,
-        estado : null,
       },
       showDialog: false,
       isEdit: false,
@@ -132,10 +122,6 @@ export default {
         {id: 5, name: 'Viernes' },
         {id: 6, name: 'Sabado'},
         {id: 7, name: 'Domingo'}
-      ],
-      estados: [
-        {id: 1, name: 'pendiente'},
-        {id: 2, name: 'finalizado' }
       ],
       repartidores: [],
       zonas: [],
@@ -151,9 +137,6 @@ export default {
           idReparto: idr
         }
       })
-    },
-    iraPlanilla(){
-      this.$router.push({name: "Planilla Reparto"})
     },
     changeId(id) {
       this.idDeleted = id
@@ -172,7 +155,6 @@ export default {
         this.newReparto.idZona = response.data[0].idZona
         this.newReparto.idRepartidor = response.data[0].idRepartidor
         this.newReparto.dia = response.data[0].dia
-        this.newReparto.estado = response.data[0].estado
       });
       this.isEdit = true
       this.showDialog = true
@@ -202,7 +184,6 @@ export default {
       bodyFormData.append('dia', this.newReparto.dia);
       bodyFormData.append('idRepartidor', this.newReparto.idRepartidor);
       bodyFormData.append('idZona', this.newReparto.idZona);
-      bodyFormData.append('estado', this.newReparto.estado)
       axios({
         method: 'PUT',
         url: Config.API_URL + 'update/modReparto',
