@@ -8,7 +8,7 @@
           <md-card-header data-background-color="green">
           <div class="md-size-100">
             <h4 class="title md-size-80">Clientes en zona {{ this.$route.params.zonaSelected }}
-              <md-button v-if="this.estadoReparto === 'pendiente'" class="md-raised md-info md-size-20" style="float: right; margin-top: 10px" @click="openDialog()">Agregar</md-button>
+              <md-button class="md-raised md-info md-size-20" style="float: right; margin-top: 10px" @click="openDialog()">Agregar</md-button>
             </h4>
           </div>
           </md-card-header>
@@ -45,7 +45,7 @@
           </md-card-content>
         </md-card>
         <div class="md-size-100">
-            <md-button v-if="this.estadoReparto === 'pendiente'" class="md-raised md-info md-size-20" style="float: right; margin-top: 10px" @click="showFinDialog = true">Finalizar Reparto</md-button>
+            <md-button class="md-raised md-info md-size-20" style="float: right; margin-top: 10px" @click="showFinDialog = true">Finalizar Reparto</md-button>
         </div>
       </div>
       <div>
@@ -229,8 +229,7 @@ export default {
       x: false,
       clientesZona: [],
       clientesenreparto: [],
-      clientesFaltantes: [],
-      estadoReparto: null
+      clientesFaltantes: []
     };
   },
   methods: {
@@ -274,7 +273,6 @@ export default {
             "Access-Control-Allow-Credentials": "true"
           }
       }).then(response => {
-        this.estadoReparto = response.data[0].estado
         this.clientesenreparto = Object.freeze(response.data)
       });
     },

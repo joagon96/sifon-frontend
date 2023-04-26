@@ -19,7 +19,7 @@
                         <md-table-cell md-label="Fecha">{{ dateTime(item.fecha) }}</md-table-cell>
                         <md-table-cell md-label="Acciones">
                           <div>
-                            <md-button @click="showClientes(item.idZona, item.descripcion, item.idReparto)" class="md-icon-button md-fab md-info md-raised">
+                            <md-button @click="showClientes(item.idHistorico)" class="md-icon-button md-fab md-info md-raised">
                                 <md-icon>grid_on</md-icon>
                               </md-button>
                           </div>
@@ -39,6 +39,7 @@
 import axios from 'axios';
 import {Config} from '../config.js'
 import moment from 'moment';
+require('moment/locale/es')
 
 
 export default {
@@ -51,13 +52,11 @@ export default {
     };
   },
   methods: {
-    showClientes(idz, dz, idr) {
+    showClientes(idh) {
       this.$router.push({
-        name: "Clientes en Reparto",
+        name: "Historico Clientes en Reparto",
         params: {
-          idZona: idz,
-          zonaSelected: dz,
-          idReparto: idr
+          idHistorico: idh
         }
       })
     },
@@ -71,7 +70,7 @@ export default {
       });
     },
     dateTime(value) {
-      return moment(value).format("YYYY-MM-DD");
+      return moment(value).format("DD MMMM YYYY");
     },
   }
 };

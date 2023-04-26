@@ -1,13 +1,13 @@
 import DashboardLayout from "@/pages/Layout/DashboardLayout.vue";
 
 import Resumen from "@/pages/Resumen.vue";
-import PlanillaReparto from "@/pages/PlanillaReparto.vue";
 import ClientesEnReparto from "@/pages/ClientesEnReparto.vue";
 import Zonas from "@/pages/Zonas.vue";
 import Repartidores from "@/pages/Repartidores.vue";
 import Clientes from "@/pages/Clientes.vue";
 import Repartos from "@/pages/Repartos.vue";
 import Historico from "@/pages/Historico.vue";
+import HistoricoClientesEnReparto from "@/pages/HistoricoClientesEnReparto.vue";
 import Login from "@/pages/Login.vue";
 import { isValidJwt, isAdmin } from "../pages";
 
@@ -27,18 +27,6 @@ const routes = [
         path: "resumen",
         name: "Resumen",
         component: Resumen,
-        beforeEnter (to, from, next) {
-          if (!isValidJwt(localStorage.token) || !isAdmin(localStorage.role)) {
-            next('/login')
-          } else {
-            next()
-          }
-        }
-      },
-      {
-        path: "planillaReparto",
-        name: "Planilla Reparto",
-        component: PlanillaReparto,
         beforeEnter (to, from, next) {
           if (!isValidJwt(localStorage.token) || !isAdmin(localStorage.role)) {
             next('/login')
@@ -112,6 +100,18 @@ const routes = [
         path: "historico",
         name: "Historico",
         component: Historico,
+        beforeEnter (to, from, next) {
+          if (!isValidJwt(localStorage.token)) {
+            next('/login')
+          } else {
+            next()
+          }
+        }
+      },
+      {
+        path: "historicoClientesEnReparto",
+        name: "Historico Clientes en Reparto",
+        component: HistoricoClientesEnReparto,
         beforeEnter (to, from, next) {
           if (!isValidJwt(localStorage.token)) {
             next('/login')
