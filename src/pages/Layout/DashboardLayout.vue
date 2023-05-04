@@ -23,7 +23,7 @@
         <md-icon>local_shipping</md-icon>
         <p>Repartos</p>
       </sidebar-link>
-      <sidebar-link to="/Historico">
+      <sidebar-link v-if="role === 'admin'" to="/Historico">
         <md-icon>inventory</md-icon>
         <p>Historico</p>
       </sidebar-link>

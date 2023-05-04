@@ -2,9 +2,27 @@
   <div class="content">
     <div class="md-layout">
       <div
-        class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-33"
+        class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-20"
       >
         <stats-card data-background-color="green">
+          <template slot="header">
+            <md-icon>my_location</md-icon>
+          </template>
+
+          <template slot="content">
+            <p class="category">Zonas</p>
+            <h3 class="title">{{cantidadZonas}}</h3>
+          </template>
+
+   
+        </stats-card>
+        
+      </div>
+
+      <div
+        class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-20"
+      >
+        <stats-card data-background-color="blue">
           <template slot="header">
             <md-icon>account_circle</md-icon>
           </template>
@@ -17,7 +35,7 @@
         </stats-card>
       </div>
       <div
-        class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-33"
+        class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-20"
       >
         <stats-card data-background-color="orange">
           <template slot="header">
@@ -32,7 +50,7 @@
         </stats-card>
       </div>
       <div
-        class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-33"
+        class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-20"
       >
         <stats-card data-background-color="red">
           <template slot="header">
@@ -50,16 +68,16 @@
       </div>
 
       <div
-        class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-33"
+        class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-20"
       >
-        <stats-card data-background-color="blue">
+        <stats-card data-background-color="green">
           <template slot="header">
-            <md-icon>my_location</md-icon>
+            <md-icon>handshake</md-icon>
           </template>
 
           <template slot="content">
-            <p class="category">Zonas</p>
-            <h3 class="title">{{cantidadZonas}}</h3>
+            <p class="category">Repartos Realizados</p>
+            <h3 class="title">{{cantidadHistorico}}</h3>
           </template>
 
    
@@ -72,8 +90,8 @@
       >
         <md-card>
           <md-card-header data-background-color="green">
-            <h4 class="title">Ventas</h4>
-            <p class="category">Cantidad de envases a vender</p>
+            <h4 class="title">Envases</h4>
+            <p class="category">Cantidad de envases vendidos</p>
           </md-card-header>
           <md-card-content>
            <div>
@@ -87,28 +105,29 @@
           </md-card-content>
         </md-card> 
       </div> 
-      <!-- <div 
+
+      <div
         class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-50"
       >
-        <nav-tabs-card>
-          <template slot="content">
-            <span class="md-nav-tabs-title">Tasks:</span>
-            <md-tabs md-sync-route class="md-success" md-alignment="left">
-              <md-tab id="tab-home" md-label="Bugs" md-icon="bug_report">
-                <nav-tabs-table></nav-tabs-table>
-              </md-tab>
+        <md-card>
+          <md-card-header data-background-color="blue">
+            <h4 class="title">Ventas</h4>
+            <p class="category">Resumen financiero</p>
+          </md-card-header>
+          <md-card-content>
+           <div>
+              <md-table v-model="financiero" table-header-color="black">
+                <md-table-row slot="md-table-row" slot-scope="{ item }" >
+                  <md-table-cell md-label="Ingreso">{{ item.ingreso}}</md-table-cell>
+                  <md-table-cell md-label="Fiado">{{ item.fiado}}</md-table-cell>
+                  <md-table-cell md-label="Total">{{ item.fiado + item.ingreso}}</md-table-cell>                  
+                </md-table-row>
+              </md-table>
+            </div>
+          </md-card-content>
+        </md-card> 
+      </div> 
 
-              <md-tab id="tab-pages" md-label="Website" md-icon="code">
-                <nav-tabs-table></nav-tabs-table>
-              </md-tab>
-
-              <md-tab id="tab-posts" md-label="server" md-icon="cloud">
-                <nav-tabs-table></nav-tabs-table>
-              </md-tab>
-            </md-tabs>
-          </template>
-        </nav-tabs-card>
-      </div>  -->
     </div>
   </div>
 </template>
@@ -151,22 +170,40 @@ export default {
         this.cantidadRepartos = response.data[0];
       });
     },
+    cantHistoricos() {
+      axios.get(Config.API_URL + 'CantHistorico').then(response => {
+        console.log(response.data);
+        this.cantidadHistorico = response.data[0];
+      });
+    },
     cantBidones12() {
       axios.get(Config.API_URL + 'CantBidones12').then(response => {
         console.log(response.data);
-        this.datos[0].cantidad = response.data;
+        this.datos[0].cantidad = response.data[0];
       });
     },
     cantBidones20() {
       axios.get(Config.API_URL + 'CantBidones20').then(response => {
         console.log(response.data);
-        this.datos[1].cantidad = response.data;
+        this.datos[1].cantidad = response.data[0];
       });
     },
     cantSoda() {
       axios.get(Config.API_URL + 'CantSoda').then(response => {
         console.log(response.data);
-        this.datos[2].cantidad= response.data;
+        this.datos[2].cantidad= response.data[0];
+      });
+    },
+    cantPagos() {
+      axios.get(Config.API_URL + 'CantPago').then(response => {
+        console.log(response.data);
+        this.financiero[0].ingreso= response.data[0];
+      });
+    },
+    cantFiados() {
+      axios.get(Config.API_URL + 'CantFiado').then(response => {
+        console.log(response.data);
+        this.financiero[0].fiado= response.data[0];
       });
     }
   },
@@ -178,6 +215,9 @@ export default {
     this.cantRepartos()
     this.cantSoda()
     this.cantZonas()
+    this.cantPagos()
+    this.cantFiados()
+    this.cantHistoricos()
   },
   components: {
     StatsCard,
@@ -195,6 +235,7 @@ export default {
     cantidadBidones12: 0,
     cantidadBidones20: 0,
     cantidadSoda: 0,
+    cantidadHistorico: 0,
     datos:[
       {
         envase: "Bidon 12 L",
@@ -207,6 +248,12 @@ export default {
        {
         envase: "Sifon Soda",
         cantidad: 0,
+      }
+    ],
+    financiero:[
+      {
+        ingreso: 0,
+        fiado: 0,
       }
     ]
   }
