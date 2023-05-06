@@ -9,6 +9,14 @@
           <div class="md-size-100">
             <h4 class="title md-size-80">Clientes en zona {{ this.$route.params.zonaSelected }}
               <md-button class="md-raised md-info md-size-20" style="float: right; margin-top: 10px" @click="openDialog()">Agregar</md-button>
+              <download-excel style="float: right; margin-right: 20px;"
+                :data   = "this.clientesenreparto"
+                :fields = "clientesenrepartoFields"
+                :name = "clientesenrepartoName">
+                <md-button class="md-button md-info md-raised" style="margin-top: 10px">
+                  <md-icon>download</md-icon>
+                </md-button>
+              </download-excel>
             </h4>
           </div>
           </md-card-header>
@@ -199,6 +207,7 @@
 <script>
 import axios from 'axios';
 import {Config} from '../config.js'
+import moment from 'moment';
 
 export default {
   created() {
@@ -229,7 +238,21 @@ export default {
       x: false,
       clientesZona: [],
       clientesenreparto: [],
-      clientesFaltantes: []
+      clientesFaltantes: [],
+      clientesenrepartoFields:{
+        'Nombre y Apellido': 'nomapeCli',
+        'Domicilio': 'domicilio',
+        'Compra 12': 'com12',
+        'Compra 20': 'com20',
+        'Compra Soda': 'comSoda',
+        'Pago': 'pago',
+        'Fiado': 'fiado',
+        'Devuelve 12': 'dev12',
+        'Devuelve 20': 'dev20',
+        'Devuelve Soda': 'devSoda',
+        'Observaciones': 'observacion'
+      },
+      clientesenrepartoName: 'Reparto en curso zona ' + this.$route.params.zonaSelected + ' ' + moment(Date.now()).format("DD-MM-YYYY")
     };
   },
   methods: {

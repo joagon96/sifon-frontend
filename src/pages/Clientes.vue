@@ -9,6 +9,14 @@
           <div class="md-size-100">  
             <h4 class="title md-size-80">Clientes Registrados
               <md-button class="md-raised md-info md-size-20" style="float: right; margin-top: 10px" @click="openDialog()">Agregar</md-button>
+              <download-excel style="float: right; margin-right: 20px;"
+                :data   = "this.clientes"
+                :fields = "clientesFields"
+                :name = "clientesName">
+                <md-button class="md-button md-info md-raised" style="margin-top: 10px">
+                  <md-icon>download</md-icon>
+                </md-button>
+              </download-excel>
             </h4>
           </div>
           </md-card-header>
@@ -94,7 +102,8 @@
 
 <script>
 import axios from 'axios';
-import {Config} from '../config.js'
+import {Config} from '../config.js';
+import moment from 'moment';
 
 export default {
   name: 'DialogConfirm',
@@ -120,6 +129,13 @@ export default {
         idZona: null
       },
       isEdit: false,
+      clientesFields:{
+        'Nombre y Apellido': 'nomapeCli',
+        'Domicilio': 'domicilio',
+        'Telefono': 'telefonoCli',
+        'Zona': 'descripcion'
+      },
+      clientesName: 'Clientes ' + moment(Date.now()).format("DD-MM-YYYY")
     };
   },
   methods: {

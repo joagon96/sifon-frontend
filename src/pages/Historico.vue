@@ -21,7 +21,7 @@
                         <md-table-cell md-label="Fecha">{{ dateTime(item.fecha) }}</md-table-cell>
                         <md-table-cell md-label="Acciones">
                           <div>
-                            <md-button @click="showClientes(item.idHistorico)" class="md-icon-button md-fab md-info md-raised">
+                            <md-button @click="showClientes(item)" class="md-icon-button md-fab md-info md-raised">
                                 <md-icon>grid_on</md-icon>
                               </md-button>
                           </div>
@@ -116,11 +116,15 @@ export default {
     };
   },
   methods: {
-    showClientes(idh) {
+    showClientes(item) {
       this.$router.push({
         name: "Historico Clientes en Reparto",
         params: {
-          idHistorico: idh
+          idHistorico: item.idHistorico,
+          dia: item.dia,
+          fecha: item.fecha,
+          repartidor: item.repartidor,
+          zona: item.zona
         }
       })
     },

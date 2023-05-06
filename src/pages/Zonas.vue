@@ -5,8 +5,16 @@
             <md-card>
                 <md-card-header data-background-color="green">
                 <div class="md-size-100">  
-                  <h4 class="title md-size-80">Zonas Registradas
+                  <h4 class="title md-size-80">Zonas Registradas 
                     <md-button class="md-raised md-info md-size-20" style="float: right; margin-top: 10px" @click="openDialog()">Agregar</md-button>
+                      <download-excel style="float: right; margin-right: 20px;"
+                        :data   = "this.zonas"
+                        :fields = "zonasFields"
+                        :name = "zonasName">
+                        <md-button class="md-button md-info md-raised" style="margin-top: 10px">
+                          <md-icon>download</md-icon>
+                        </md-button>
+                      </download-excel>
                   </h4>
                 </div>
 
@@ -70,6 +78,7 @@
 <script>
 import axios from 'axios';
 import {Config} from '../config.js'
+import moment from 'moment';
 
 export default {
   mounted() {
@@ -85,7 +94,11 @@ export default {
         descripcion: ''
       },
       showDialog: false,
-      isEdit: false
+      isEdit: false,
+      zonasFields:{
+        'zona': 'descripcion'
+      },
+      zonasName: 'Zonas ' + moment(Date.now()).format("DD-MM-YYYY")
     };
   },
   methods: {

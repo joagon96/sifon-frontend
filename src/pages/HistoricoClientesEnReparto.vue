@@ -7,7 +7,16 @@
           <md-card>
             <md-card-header data-background-color="green">
             <div class="md-size-100">
-              <h4 class="title md-size-80">Planilla de Reparto</h4>
+              <h4 class="title md-size-80">Planilla de Reparto
+                <download-excel style="float: right; margin-right: 20px;"
+                :data   = "this.clientesenreparto"
+                :fields = "this.historicoFields"
+                :name = "this.historicoName">
+                <md-button class="md-button md-info md-raised" style="margin-top: 10px">
+                  <md-icon>download</md-icon>
+                </md-button>
+              </download-excel>
+              </h4>
             </div>
             </md-card-header>
             <md-card-content>
@@ -46,6 +55,26 @@
     data() {
       return {
         clientesenreparto: [],
+        historico: {
+          zona: '',
+          dia: '',
+          fecha: '',
+          repartidor: ''
+        },
+        historicoName: 'Reparto_zona_' + this.$route.params.zona + '_dia_' + this.$route.params.dia + '_repartidor_'+ this.$route.params.repartidor + '_fecha_' + this.$route.params.fecha,
+        historicoFields:{
+          'Nombre y Apellido': 'cliente',
+          'Domicilio': 'domicilio',
+          'Compra 12': 'com12',
+          'Compra 20': 'com20',
+          'Compra Soda': 'comSoda',
+          'Pago': 'pago',
+          'Fiado': 'fiado',
+          'Devuelve 12': 'dev12',
+          'Devuelve 20': 'dev20',
+          'Devuelve Soda': 'devSoda',
+          'Observaciones': 'observacion'
+        },
       };
     },
     methods: {
@@ -62,7 +91,6 @@
           this.clientesenreparto = Object.freeze(response.data)
         });
       },
-     
       truncateText(text, stop, clamp){
         if (text) {
           return text.slice(0, stop) + (stop < text.length ? clamp || '...' : '')

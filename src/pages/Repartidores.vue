@@ -7,6 +7,14 @@
                 <div class="md-size-100">  
                   <h4 class="title md-size-80">Repartidores Registrados
                     <md-button class="md-raised md-info md-size-20" style="float: right; margin-top: 10px" @click="openDialog()">Agregar</md-button>
+                    <download-excel style="float: right; margin-right: 20px;"
+                      :data   = "this.repartidores"
+                      :fields = "repartidoresFields"
+                      :name = "repartidoresName">
+                      <md-button class="md-button md-info md-raised" style="margin-top: 10px">
+                        <md-icon>download</md-icon>
+                      </md-button>
+                    </download-excel>
                   </h4>
                 </div>
 
@@ -78,6 +86,7 @@
 <script>
 import axios from 'axios';
 import {Config} from '../config.js'
+import moment from 'moment';
 
 export default {
   name: 'DialogConfirm',
@@ -96,7 +105,12 @@ export default {
         telefono: '',
       },
       showDialog: false,
-      isEdit: false
+      isEdit: false,
+      repartidoresFields:{
+        'Nombre y Apellido': 'nomapeRep',
+        'Telefono': 'telefonoRep',
+      },
+      repartidoresName: 'Repartidores ' + moment(Date.now()).format("DD-MM-YYYY")
     };
   },
   methods: {
