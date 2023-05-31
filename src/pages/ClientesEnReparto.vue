@@ -24,7 +24,7 @@
             <div>
               <md-table v-model="this.clientesenreparto" table-header-color="green">
                 <md-table-row slot="md-table-row" slot-scope="{ item }">
-                  <md-table-cell md-label="Nombre">{{ item.nomapeCli }}</md-table-cell>
+                  <md-table-cell md-label="Nombre">{{ item.nomapeCli }}<md-icon v-if="item.deuda>0">error</md-icon></md-table-cell>
                   <md-table-cell md-label="Domicilio">{{ item.domicilio }}</md-table-cell>
                   <md-table-cell md-label="Compra 12L">{{item.com12}}</md-table-cell>
                   <md-table-cell md-label="Compra 20L">{{item.com20}}</md-table-cell>
@@ -44,6 +44,11 @@
                     <div>
                       <md-button class="md-icon-button md-fab md-danger md-raised" @click="deleteLineaReparto(item.idLR)">
                         <md-icon>delete_forever</md-icon>
+                      </md-button>
+                    </div>
+                    <div>
+                      <md-button class="md-icon-button md-fab md-success md-raised" @click="deudaDialog(item.idCliente,item.nomapeCli,item.deuda)">
+                        <md-icon>price_check</md-icon>
                       </md-button>
                     </div>
                   </md-table-cell>  
@@ -98,7 +103,7 @@
 
       <div>
         <md-dialog :md-active.sync="showEditDialog" style="z-index: 5;">
-          <md-dialog-title>Agregar cliente</md-dialog-title>
+          <md-dialog-title>Editar cliente</md-dialog-title>
           <div class="md-layout-item md-small-size-100 md-size-100">
             <div class="md-layout md-gutter">
               <div class="md-layout-item md-size-100">
@@ -200,6 +205,32 @@
           @md-cancel="showFinDialog = false"
           @md-confirm="finishReparto()" />
       </div>
+
+      <div>
+        <md-dialog :md-active.sync="showDeudaDialog" style="z-index: 5;">
+          <md-dialog-title>Deuda cliente {{this.deuda.cliente}}</md-dialog-title>
+          <div class="md-layout-item md-small-size-100 md-size-100">
+            <div class="md-layout md-gutter">
+              <div class="md-layout-item md-size-100">
+                <md-field>
+                  <label for="movie">Fiado</label>
+                  <md-input v-model="deuda.fiado" type="text" disabled></md-input>
+                </md-field>
+              </div>
+              <div class="md-layout-item md-size-100">
+                <md-field>
+                  <label>Paga</label>
+                  <md-input v-model="deuda.paga" type="number"></md-input>
+                </md-field>
+              </div>
+            </div>
+          </div>
+          <md-dialog-actions>
+            <md-button class="md-danger" @click="closeDeudaDialog()">Cancelar</md-button>
+            <md-button class="md-primary"  @click="updateDeuda()">Guardar</md-button>
+          </md-dialog-actions>
+        </md-dialog>
+      </div>
     </div>
   </div>
 </template>
@@ -232,9 +263,16 @@ export default {
         fiado: null,
         observacion: null
       },
+      deuda:{
+        idCliente: null,
+        cliente: null,
+        fiado: null,
+        paga: null,
+      },
       showDialog: false,
       showEditDialog: false,
       showFinDialog: false,
+      showDeudaDialog: false,
       x: false,
       clientesZona: [],
       clientesenreparto: [],
@@ -384,6 +422,31 @@ export default {
         this.getLineas()
       });
     },
+    updateDeuda(){
+      var bodyFormData = new FormData();
+      bodyFormData.append('idCliente', this.deuda.idCliente);
+      bodyFormData.append('pagado', this.deuda.paga);
+      axios({
+          method: 'PUT',
+          url: Config.API_URL + 'update/deuda',
+          data: bodyFormData,
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": "true"
+          }
+      }).then(response => {
+        this.getLineas()
+        this.closeDeudaDialog()
+      });
+    },
+    deudaDialog(id,cliente,deuda){
+      this.deuda.fiado = deuda
+      this.deuda.paga = 0
+      this.deuda.cliente = cliente
+      this.deuda.idCliente = id
+      this.showDeudaDialog = true
+    },
     cleanLinea(){
       this.newlineareparto.idLR = null
       this.newlineareparto.idCliente = null
@@ -414,6 +477,13 @@ export default {
       this.cleanLinea()
       this.isEdit = false
       this.showDialog = true
+    },
+    closeDeudaDialog(){
+      this.showDeudaDialog = false
+      this.deuda.idCliente = null
+      this.deuda.cliente = null
+      this.deuda.fiado = null
+      this.deuda.paga = null
     },
     truncateText(text, stop, clamp){
       if (text) {
