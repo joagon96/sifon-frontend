@@ -60,7 +60,11 @@
         <div class="md-size-100">
             <md-button class="md-raised md-info md-size-20" style="float: right; margin-top: 10px" @click="showFinDialog = true">Finalizar Reparto</md-button>
         </div>
+        <div class="md-size-100">
+            <md-button class="md-raised md-success md-size-20" style="float: right; margin-top: 10px; margin-right: 10px;" @click="resumenReparto()">Ver Resumen</md-button>
+        </div>
       </div>
+
       <div>
         <md-dialog :md-active.sync="showDialog" style="z-index: 5;">
           <md-dialog-title>Agregar cliente</md-dialog-title>
@@ -231,6 +235,83 @@
           </md-dialog-actions>
         </md-dialog>
       </div>
+
+      <div>
+        <md-dialog :md-active.sync="showResumenDialog" style="z-index: 5;">
+          <md-dialog-title>Resumen</md-dialog-title>
+          <div class="md-layout-item md-small-size-100 md-size-100">
+            <div class="md-layout md-gutter">
+              <div class="md-layout-item md-size-100">
+                <md-field>
+                  <label for="movie">Repartidor</label>
+                  <md-input v-model="resumen.nomapeRep" type="text" disabled></md-input>
+                </md-field>
+              </div>
+              <div class="md-layout-item md-size-33">
+                <md-field>
+                  <label>Bidones comprados 12L</label>
+                  <md-input v-model="resumen.com12" type="number" disabled></md-input>
+                </md-field>
+              </div>
+              <div class="md-layout-item md-size-33">
+                <md-field>
+                  <label>Bidones devueltos 12L</label>
+                  <md-input v-model="resumen.dev12" type="number" disabled></md-input>
+                </md-field>
+              </div>
+              <div class="md-layout-item md-size-33">
+                <md-field>
+                  <label>Bidones comprados 20L</label>
+                  <md-input v-model="resumen.com20" type="number" disabled></md-input>
+                </md-field>
+              </div>
+              <div class="md-layout-item md-size-33">
+                <md-field>
+                  <label>Bidones devueltos 20L</label>
+                  <md-input v-model="resumen.dev20" type="number" disabled></md-input>
+                </md-field>
+              </div>
+              <div class="md-layout-item md-size-33">
+                <md-field>
+                  <label>Sifones comprados</label>
+                  <md-input v-model="resumen.comSoda" type="number" disabled></md-input>
+                </md-field>
+              </div>
+              <div class="md-layout-item md-size-33">
+                <md-field>
+                  <label>Sifones devueltos</label>
+                  <md-input v-model="resumen.devSoda" type="number" disabled></md-input>
+                </md-field>
+              </div>
+              <div class="md-layout-item md-size-50">
+                <md-field>
+                  <label>Pago</label>
+                  <md-input v-model="resumen.pago" type="number" disabled></md-input>
+                  <md-icon>attach_money</md-icon>
+                </md-field>
+              </div>
+              <div class="md-layout-item md-size-50">
+                <md-field>
+                  <label>Fiado</label>
+                  <md-input v-model="resumen.fiado" type="number" disabled></md-input>
+                  <md-icon>attach_money</md-icon>
+                </md-field>
+              </div>
+            </div>
+          </div>
+          <md-dialog-actions>
+            <download-excel style="float: right; margin-right: 10px;"
+                :data   = "resumenData"
+                :fields = "resumenFields"
+                :name = "resumenName">
+                <md-button class="md-button md-success md-raised">
+                  Descargar
+                </md-button>
+              </download-excel>
+            <md-button class="md-primary" @click="closeResumenDialog()">Aceptar</md-button>
+          </md-dialog-actions>
+        </md-dialog>
+      </div>
     </div>
   </div>
 </template>
@@ -273,6 +354,7 @@ export default {
       showEditDialog: false,
       showFinDialog: false,
       showDeudaDialog: false,
+      showResumenDialog: false,
       x: false,
       clientesZona: [],
       clientesenreparto: [],
@@ -290,7 +372,31 @@ export default {
         'Devuelve Soda': 'devSoda',
         'Observaciones': 'observacion'
       },
-      clientesenrepartoName: 'Reparto en curso zona ' + this.$route.params.zonaSelected + ' ' + moment(Date.now()).format("DD-MM-YYYY")
+      clientesenrepartoName: 'Reparto en curso zona ' + this.$route.params.zonaSelected + ' ' + moment(Date.now()).format("DD-MM-YYYY"),
+      resumen: {
+        com12: null,
+        com20: null,
+        comSoda: null,
+        pago: null,
+        fiado: null,
+        dev12: null,
+        dev20: null,
+        devSoda: null,
+        nomapeRep: null,
+      },
+      resumenData:[],
+      resumenFields:{
+        'Repartidor': 'nomapeRep',
+        'Bidones 12L comprados': 'com12',
+        'Bidones 20L comprados': 'com20',
+        'Sifones Soda comprados': 'comSoda',
+        'Pago': 'pago',
+        'Fiado': 'fiado',
+        'Bidones 12L devueltos': 'dev12',
+        'Bidones 20L devueltos': 'dev20',
+        'Sifones Soda devueltos': 'devSoda'
+      },
+      resumenName: 'Resumen de Reparto en curso zona' + this.$route.params.zonaSelected + ' ' + moment(Date.now()).format("DD-MM-YYYY"),
     };
   },
   methods: {
@@ -335,6 +441,28 @@ export default {
           }
       }).then(response => {
         this.clientesenreparto = Object.freeze(response.data)
+      });
+    },
+    getResumen() {
+      axios({
+          method: 'GET',
+          url: Config.API_URL + 'resumen/reparto/' + this.$route.params.idReparto,
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": "true"
+          }
+      }).then(response => {
+        this.resumen.nomapeRep = response.data[0].nomapeRep
+        this.resumen.com12 = response.data[0].com12
+        this.resumen.com20 = response.data[0].com20
+        this.resumen.comSoda = response.data[0].comSoda
+        this.resumen.dev12 = response.data[0].dev12
+        this.resumen.dev20 = response.data[0].dev20
+        this.resumen.devSoda = response.data[0].devSoda
+        this.resumen.pago = response.data[0].pago
+        this.resumen.fiado = response.data[0].fiado
+        this.resumenData = Object.freeze(response.data)
       });
     },
     editLineaReparto(idLR){
@@ -463,6 +591,13 @@ export default {
       this.newlineareparto.pago = null
       this.newlineareparto.fiado = null
       this.newlineareparto.observacion = null
+    },
+    resumenReparto(){
+      this.getResumen()
+      this.showResumenDialog = true
+    },
+    closeResumenDialog(){
+      this.showResumenDialog = false
     },
     closeDialog(){
       this.showDialog = false
