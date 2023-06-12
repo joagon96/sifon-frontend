@@ -23,7 +23,7 @@
               <div>
                 <md-table v-model="this.clientesenreparto" table-header-color="green">
                   <md-table-row slot="md-table-row" slot-scope="{ item }">
-                    <md-table-cell md-label="Nombre">{{ item.cliente }}</md-table-cell>
+                    <md-table-cell md-label="Cliente">{{ item.cliente }}</md-table-cell>
                     <md-table-cell md-label="Domicilio">{{ item.domicilio }}</md-table-cell>
                     <md-table-cell md-label="Compra 12L">{{item.com12}}</md-table-cell>
                     <md-table-cell md-label="Compra 20L">{{item.com20}}</md-table-cell>
