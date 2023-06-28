@@ -7,6 +7,10 @@
         <md-icon>dashboard</md-icon>
         <p>Resumen</p>
       </sidebar-link>
+      <sidebar-link v-if="role === 'admin'" to="/productos">
+        <md-icon>my_location</md-icon>
+        <p>Productos</p>
+      </sidebar-link>
       <sidebar-link v-if="role === 'admin'" to="/clientes">
         <md-icon>account_circle</md-icon>
         <p>Clientes</p>

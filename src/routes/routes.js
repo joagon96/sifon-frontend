@@ -4,6 +4,7 @@ import Resumen from "@/pages/Resumen.vue";
 import ClientesEnReparto from "@/pages/ClientesEnReparto.vue";
 import Zonas from "@/pages/Zonas.vue";
 import Repartidores from "@/pages/Repartidores.vue";
+import Productos from "@/pages/Productos.vue";
 import Clientes from "@/pages/Clientes.vue";
 import Repartos from "@/pages/Repartos.vue";
 import Historico from "@/pages/Historico.vue";
@@ -27,6 +28,19 @@ const routes = [
         path: "resumen",
         name: "Resumen",
         component: Resumen,
+        beforeEnter (to, from, next) {
+          if (!isValidJwt(localStorage.token) || !isAdmin(localStorage.role)) {
+            next('/login')
+          } else {
+            next()
+          }
+        }
+      },
+      {
+        path: "productos",
+        name: "Productos",
+        props: true,
+        component: Productos,
         beforeEnter (to, from, next) {
           if (!isValidJwt(localStorage.token) || !isAdmin(localStorage.role)) {
             next('/login')
