@@ -8,7 +8,7 @@
         <p>Resumen</p>
       </sidebar-link>
       <sidebar-link v-if="role === 'admin'" to="/productos">
-        <md-icon>my_location</md-icon>
+        <md-icon>work</md-icon>
         <p>Productos</p>
       </sidebar-link>
       <sidebar-link v-if="role === 'admin'" to="/clientes">
