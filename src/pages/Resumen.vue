@@ -1,5 +1,25 @@
 <template>
   <div class="content">
+    <div v-if="this.ventasMesData.disponible">
+      <chart-card
+        :chart-data="this.ventasMesData"
+        :chart-type="this.ventasMesData.tipo"
+        :data-background-color="this.ventasMesData.color">
+        <template slot="content">
+          <h4 class="title">{{this.ventasMesData.titulo}}</h4>
+            <!-- <p class="category">
+              <span class="text-success"><i class="fa fa-long-arrow-up"></i> 55% </span> increase in today sales.
+            </p> -->
+        </template>
+
+        <!-- <template slot="footer">
+          <div class="stats">
+            <md-icon>access_time</md-icon>
+            updated 4 minutes ago
+          </div>
+        </template> -->
+   </chart-card>
+      </div>
     <div class="md-layout">
       <div
         class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-20"
@@ -205,6 +225,13 @@ export default {
         console.log(response.data);
         this.financiero[0].fiado= response.data[0];
       });
+    },
+    ventasMes(){
+      axios.get(Config.API_URL + 'reporte/ventasxmes').then(response => {
+        this.ventasMesData.labels = Object.keys(response.data);
+        this.ventasMesData.series.push(Object.values(response.data));
+        this.ventasMesData.disponible = true
+      });
     }
   },
   mounted() {
@@ -218,14 +245,14 @@ export default {
     this.cantPagos()
     this.cantFiados()
     this.cantHistoricos()
+    this.ventasMes()
   },
   components: {
     StatsCard,
     ChartCard,
     NavTabsCard,
     NavTabsTable,
-    OrderedTable
-  },  
+    OrderedTable},  
   data () {
   return {
     cantidadClientes: 0,
@@ -255,7 +282,15 @@ export default {
         ingreso: 0,
         fiado: 0,
       }
-    ]
+    ],
+    ventasMesData:{
+      labels: [],
+      series: [],
+      disponible: false,
+      tipo: "Line",
+      color: "green",
+      titulo: "Ventas por Mes"
+    },
   }
 } 
 };

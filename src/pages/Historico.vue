@@ -190,7 +190,21 @@ export default {
 
 
 <style>
-
+.md-datepicker-header {
+    background-color: #4caf50 !important;
+}
+.md-button.md-dense.md-icon-button.md-theme-default {
+  background-color: #ffffff !important;
+  color: black !important
+}
+.md-button.md-dense.md-datepicker-month-trigger.md-theme-default {
+  background-color: #ffffff !important;
+  color: black !important
+}
+.md-datepicker-day-button.md-datepicker-selected{
+  background-color: #4caf50 !important;
+  color: white !important
+}
 </style>
 
 
