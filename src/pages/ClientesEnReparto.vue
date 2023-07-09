@@ -227,6 +227,12 @@
                   <md-input v-model="deuda.paga" type="number"></md-input>
                 </md-field>
               </div>
+              <div class="md-layout-item md-size-100">
+                <md-field>
+                  <label>Comentario</label>
+                  <md-input v-model="deuda.comentario" type="text"></md-input>
+                </md-field>
+              </div>
             </div>
           </div>
           <md-dialog-actions>
@@ -349,6 +355,7 @@ export default {
         cliente: null,
         fiado: null,
         paga: null,
+        comentario: null,
       },
       showDialog: false,
       showEditDialog: false,
@@ -554,6 +561,7 @@ export default {
       var bodyFormData = new FormData();
       bodyFormData.append('idCliente', this.deuda.idCliente);
       bodyFormData.append('pagado', this.deuda.paga);
+      bodyFormData.append('comentario', this.deuda.comentario);
       axios({
           method: 'PUT',
           url: Config.API_URL + 'update/deuda',
@@ -619,6 +627,7 @@ export default {
       this.deuda.cliente = null
       this.deuda.fiado = null
       this.deuda.paga = null
+      this.deuda.comentario = null
     },
     truncateText(text, stop, clamp){
       if (text) {

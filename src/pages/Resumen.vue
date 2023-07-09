@@ -1,25 +1,51 @@
 <template>
   <div class="content">
-    <div v-if="this.ventasMesData.disponible">
-      <chart-card
-        :chart-data="this.ventasMesData"
-        :chart-type="this.ventasMesData.tipo"
-        :data-background-color="this.ventasMesData.color">
-        <template slot="content">
-          <h4 class="title">{{this.ventasMesData.titulo}}</h4>
-            <!-- <p class="category">
-              <span class="text-success"><i class="fa fa-long-arrow-up"></i> 55% </span> increase in today sales.
-            </p> -->
-        </template>
-
-        <!-- <template slot="footer">
-          <div class="stats">
-            <md-icon>access_time</md-icon>
-            updated 4 minutes ago
-          </div>
-        </template> -->
-   </chart-card>
+    <div class="md-layout">
+      <div v-for="grafico in this.graficos1" :key="grafico.id" class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-50">
+        <div v-if="grafico.disponible">
+          <chart-card
+            :chart-data="grafico"
+            :chart-type="grafico.tipo"
+            :data-background-color="grafico.color">
+            <template slot="content">
+              <h4 class="title">{{grafico.titulo}}</h4>
+                <!-- <p class="category">
+                  <span class="text-success"><i class="fa fa-long-arrow-up"></i> 55% </span> increase in today sales.
+                </p> -->
+            </template>
+  
+            <!-- <template slot="footer">
+              <div class="stats">
+                <md-icon>access_time</md-icon>
+                updated 4 minutes ago
+              </div>
+            </template> -->
+          </chart-card>
+        </div>
       </div>
+      <div v-for="grafico in this.graficos2" :key="grafico.id" class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-50">
+        <div v-if="grafico.disponible">
+          <chart-card
+            :chart-data="grafico"
+            :chart-type="grafico.tipo"
+            :data-background-color="grafico.color">
+            <template slot="content">
+              <h4 class="title">{{grafico.titulo}}</h4>
+                <!-- <p class="category">
+                  <span class="text-success"><i class="fa fa-long-arrow-up"></i> 55% </span> increase in today sales.
+                </p> -->
+            </template>
+  
+            <!-- <template slot="footer">
+              <div class="stats">
+                <md-icon>access_time</md-icon>
+                updated 4 minutes ago
+              </div>
+            </template> -->
+          </chart-card>
+        </div>
+      </div>
+    </div>
     <div class="md-layout">
       <div
         class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-20"
@@ -105,44 +131,73 @@
         
       </div>
       
-      <div
-        class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-50"
+      <div v-if="clientesCargados"
+        class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-33"
       >
         <md-card>
           <md-card-header data-background-color="green">
-            <h4 class="title">Envases</h4>
-            <p class="category">Cantidad de envases vendidos</p>
+            <h4 class="title">Ranking de Clientes</h4>
           </md-card-header>
           <md-card-content>
            <div>
-              <md-table v-model="datos" table-header-color="black">
-                <md-table-row slot="md-table-row" slot-scope="{ item }" >
-                  <md-table-cell md-label="Envase">{{ item.envase}}</md-table-cell>
-                  <md-table-cell md-label="Cantidad">{{ item.cantidad}}</md-table-cell>                 
-                </md-table-row>
-              </md-table>
+            <md-table>
+              <md-table-row>
+                <md-table-head>Cliente</md-table-head>
+                <md-table-head>Aporte</md-table-head>
+              </md-table-row>
+              <md-table-row v-for="(valor, clave) in clientes" :key="clave">
+                <md-table-cell>{{ clave }}</md-table-cell>
+                <md-table-cell>{{ valor }}</md-table-cell>
+              </md-table-row>
+            </md-table>
             </div>
           </md-card-content>
         </md-card> 
       </div> 
 
       <div
-        class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-50"
+        class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-33"
       >
         <md-card>
           <md-card-header data-background-color="blue">
-            <h4 class="title">Ventas</h4>
-            <p class="category">Resumen financiero</p>
+            <h4 class="title">Ranking de Duedores</h4>
           </md-card-header>
           <md-card-content>
            <div>
-              <md-table v-model="financiero" table-header-color="black">
-                <md-table-row slot="md-table-row" slot-scope="{ item }" >
-                  <md-table-cell md-label="Ingreso">{{ item.ingreso}}</md-table-cell>
-                  <md-table-cell md-label="Fiado">{{ item.fiado}}</md-table-cell>
-                  <md-table-cell md-label="Total">{{ item.fiado + item.ingreso}}</md-table-cell>                  
-                </md-table-row>
-              </md-table>
+            <md-table>
+              <md-table-row>
+                <md-table-head>Cliente</md-table-head>
+                <md-table-head>Deuda</md-table-head>
+              </md-table-row>
+              <md-table-row v-for="(valor, clave) in deudores" :key="clave">
+                <md-table-cell>{{ clave }}</md-table-cell>
+                <md-table-cell>{{ valor }}</md-table-cell>
+              </md-table-row>
+            </md-table>
+            </div>
+          </md-card-content>
+        </md-card> 
+      </div> 
+
+      <div
+        class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-33"
+      >
+        <md-card>
+          <md-card-header data-background-color="orange">
+            <h4 class="title">Ranking de Productos</h4>
+          </md-card-header>
+          <md-card-content>
+           <div>
+            <md-table>
+              <md-table-row>
+                <md-table-head>Producto</md-table-head>
+                <md-table-head>Cantidad</md-table-head>
+              </md-table-row>
+              <md-table-row v-for="(valor, clave) in productos" :key="clave">
+                <md-table-cell>{{ clave }}</md-table-cell>
+                <md-table-cell>{{ valor }}</md-table-cell>
+              </md-table-row>
+            </md-table>
             </div>
           </md-card-content>
         </md-card> 
@@ -228,11 +283,79 @@ export default {
     },
     ventasMes(){
       axios.get(Config.API_URL + 'reporte/ventasxmes').then(response => {
-        this.ventasMesData.labels = Object.keys(response.data);
-        this.ventasMesData.series.push(Object.values(response.data));
-        this.ventasMesData.disponible = true
+        this.graficos1[0].labels = Object.keys(response.data);
+        this.graficos1[0].series.push(Object.values(response.data));
+        this.graficos1[0].disponible = true
       });
-    }
+    },
+    productosMes(){
+      axios.get(Config.API_URL + 'reporte/productosxmes').then(response => {
+        this.graficos1[1].labels = Object.keys(response.data);
+        let productos = []
+        let bidones12 = []
+        let bidones20 = []
+        let sifones = []
+        productos = Object.values(response.data)
+        bidones12 = []
+        bidones20 = []
+        sifones = []
+        for (let i = 0; i < productos.length; i++) {
+          bidones12.push(productos[i]['Bidon 12L'])
+          bidones20.push(productos[i]['Bidon 20L'])
+          sifones.push(productos[i]['Sifon Soda'])
+        }
+        this.graficos1[1].series.push(bidones12);
+        this.graficos1[1].series.push(bidones20);
+        this.graficos1[1].series.push(sifones);
+        this.graficos1[1].disponible = true
+      });
+    },
+    repartosMes(){
+      axios.get(Config.API_URL + 'reporte/repartosxmes').then(response => {
+        this.graficos1[2].labels = Object.keys(response.data);
+        this.graficos1[2].series.push(Object.values(response.data));
+        this.graficos1[2].disponible = true
+      });
+    },
+    clientesZona(){
+      axios.get(Config.API_URL + 'reporte/clientesxzona').then(response => {
+        this.graficos2[0].labels = Object.keys(response.data);
+        this.graficos2[0].series.push(Object.values(response.data));
+        this.graficos2[0].disponible = true
+      });
+    },
+    repartosZona(){
+      axios.get(Config.API_URL + 'reporte/repartosxzona').then(response => {
+        this.graficos2[1].labels = Object.keys(response.data);
+        this.graficos2[1].series.push(Object.values(response.data));
+        this.graficos2[1].disponible = true
+      });
+    },
+    repartosDia(){
+      axios.get(Config.API_URL + 'reporte/repartosxdia').then(response => {
+        this.graficos2[2].labels = Object.keys(response.data);
+        this.graficos2[2].series.push(Object.values(response.data));
+        this.graficos2[2].disponible = true
+      });
+    },
+    topClientes(){
+      axios.get(Config.API_URL + 'reporte/topClientes').then(response => {
+        this.clientes = response.data
+        this.clientesCargados = true
+      });
+    },
+    topDeudores(){
+      axios.get(Config.API_URL + 'reporte/topDeudores').then(response => {
+        this.deudores = response.data
+        this.deudoresCargados = true
+      });
+    },
+    topProductos(){
+      axios.get(Config.API_URL + 'reporte/topProductos').then(response => {
+        this.productos = response.data
+        this.productosCargados = true
+      });
+    },
   },
   mounted() {
     this.cantClientes()
@@ -246,6 +369,14 @@ export default {
     this.cantFiados()
     this.cantHistoricos()
     this.ventasMes()
+    this.productosMes()
+    this.repartosMes()
+    this.clientesZona()
+    this.repartosZona()
+    this.repartosDia()
+    this.topClientes()
+    this.topDeudores()
+    this.topProductos()
   },
   components: {
     StatsCard,
@@ -283,14 +414,70 @@ export default {
         fiado: 0,
       }
     ],
-    ventasMesData:{
-      labels: [],
-      series: [],
-      disponible: false,
-      tipo: "Line",
-      color: "green",
-      titulo: "Ventas por Mes"
-    },
+    graficos1:[
+      {
+        id: 1,
+        labels: [],
+        series: [],
+        disponible: false,
+        tipo: "Line",
+        color: "green",
+        titulo: "Ventas por mes"
+      },
+      {
+        id: 2,
+        labels: [],
+        series: [],
+        disponible: false,
+        tipo: "Bar",
+        color: "blue",
+        titulo: "Productos vendidos por mes"
+      },
+      {
+        id: 3,
+        labels: [],
+        series: [],
+        disponible: false,
+        tipo: "Line",
+        color: "orange",
+        titulo: "Repartos realizados por mes"
+      }
+    ],
+    graficos2:[
+      {
+        id: 1,
+        labels: [],
+        series: [],
+        disponible: false,
+        tipo: "Line",
+        color: "green",
+        titulo: "Clientes por zona"
+      },
+      {
+        id: 2,
+        labels: [],
+        series: [],
+        disponible: false,
+        tipo: "Line",
+        color: "blue",
+        titulo: "Repartos por zona"
+      },
+      {
+        id: 3,
+        labels: [],
+        series: [],
+        disponible: false,
+        tipo: "Line",
+        color: "orange",
+        titulo: "Repartos por dia"
+      }
+    ],
+    clientes:{},
+    clientesCargados: false,
+    deudores:{},
+    deudoresCargados: false,
+    productos:{},
+    productosCargados: false,
   }
 } 
 };

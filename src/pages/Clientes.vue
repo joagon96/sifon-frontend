@@ -22,8 +22,8 @@
           </md-card-header>
           <md-card-content>
             <div>
-              <md-table v-model="this.clientes" table-header-color="green">
-                <md-table-row slot="md-table-row" slot-scope="{ item }">
+              <md-table v-model="this.clientes" table-header-color="green" @md-selected="openReportDialog">
+                <md-table-row slot="md-table-row" slot-scope="{ item }" md-selectable="single">
                   <md-table-cell md-label="Nombre">{{ item.nomapeCli }}</md-table-cell>
                   <md-table-cell md-label="Domicilio">{{ item.domicilio }}</md-table-cell>
                   <md-table-cell md-label="Teléfono">{{ item.telefonoCli }}</md-table-cell>
@@ -92,6 +92,88 @@
               </md-dialog-actions>
             </md-dialog>
           </div>
+
+          <div>
+            <md-dialog :md-active.sync="reportDialog" style="z-index: 5; width: 1500px;;">
+              <md-dialog-title>Informacion del cliente</md-dialog-title>
+                <div class="md-layout">
+                  <div v-if="grafico.disponible" class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-50">
+                      <chart-card
+                        :chart-data="grafico"
+                        :chart-type="grafico.tipo"
+                        :data-background-color="grafico.color">
+                        <template slot="content">
+                            <p class="category">
+                              {{grafico.titulo}}
+                            </p>
+                        </template>
+              
+                        <!-- <template slot="footer">
+                          <div class="stats">
+                            <md-icon>access_time</md-icon>
+                            updated 4 minutes ago
+                          </div>
+                        </template> -->
+                      </chart-card>
+
+                      <md-card>
+                        <md-card-header data-background-color="blue">
+                          <p>Ranking de Productos</p>
+                        </md-card-header>
+                        <md-card-content>
+                        <div>
+                          <md-table>
+                            <md-table-row>
+                              <md-table-head>Producto</md-table-head>
+                              <md-table-head>Cantidad</md-table-head>
+                            </md-table-row>
+                            <md-table-row v-for="(valor, clave) in productos" :key="clave">
+                              <md-table-cell>{{ clave }}</md-table-cell>
+                              <md-table-cell>{{ valor }}</md-table-cell>
+                            </md-table-row>
+                          </md-table>
+                          </div>
+                        </md-card-content>
+                      </md-card> 
+                </div> 
+
+                <div class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-50">
+
+                  <stats-card data-background-color="red">
+                    <template slot="header">
+                      <md-icon>money_off</md-icon>
+                    </template>
+
+                    <template slot="content">
+                      <p class="category">Deuda Actual</p>
+                      <h3 class="title">{{this.deudaActual}}</h3>
+                    </template>
+                  </stats-card>
+        
+
+                <md-card>
+                  <md-card-header data-background-color="orange">
+                    <p>Historial de pago de deudas</p>
+                  </md-card-header>
+                  <md-card-content>
+                    <md-table v-model="this.deudas" table-header-color="green" >
+                      <md-table-row slot="md-table-row" slot-scope="{ item }">
+                        <md-table-cell md-label="Fecha">{{ item.fecha }}</md-table-cell>
+                        <md-table-cell md-label="Pago">{{ item.monto }}</md-table-cell>
+                        <md-table-cell md-label="Comentario">{{ item.comentario }}</md-table-cell>
+                      </md-table-row>
+                    </md-table>
+                  </md-card-content>
+                </md-card>
+              </div>
+              </div>
+
+              <md-dialog-actions>
+                <md-button class="md-primary" @click="closeReportDialog()">Aceptar</md-button>
+              </md-dialog-actions>
+            </md-dialog>
+          </div>
+
         </md-card>
       </div>
       <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100">
@@ -104,6 +186,10 @@
 import axios from 'axios';
 import {Config} from '../config.js';
 import moment from 'moment';
+import {
+  ChartCard,
+  StatsCard,
+} from "@/components";
 
 export default {
   name: 'DialogConfirm',
@@ -112,6 +198,7 @@ export default {
     this.getClientes(),
     this.getZonas()
   },
+  components: {ChartCard,StatsCard}, 
   data() {
     return  {
       idDeleted: Number, 
@@ -135,10 +222,43 @@ export default {
         'Telefono': 'telefonoCli',
         'Zona': 'descripcion'
       },
-      clientesName: 'Clientes ' + moment(Date.now()).format("DD-MM-YYYY")
+      clientesName: 'Clientes ' + moment(Date.now()).format("DD-MM-YYYY"),
+      reportDialog: false,
+      grafico:{
+        labels: [],
+        series: [],
+        disponible: false,
+        tipo: "Line",
+        color: "green",
+        titulo: "Ventas por mes"
+      },
+      productos: {},
+      productosCargados: false,
+      deudas: [],
+      deudasCargado: false,
+      deudaActual: 0,
     };
   },
   methods: {
+    historicoDeuda(id){
+      axios.get(Config.API_URL + 'historico/deuda/'+id).then(response => {
+        this.deudas = response.data
+        this.deudasCargado = true
+      });
+    },
+    productosCliente(id){
+      axios.get(Config.API_URL + 'reporte/productosxcliente/'+id).then(response => {
+        this.productos = response.data
+        this.productosCargados = true
+      });
+    },
+    ventasCliente(id){
+      axios.get(Config.API_URL + 'reporte/ventasxcliente/'+id).then(response => {
+        this.grafico.labels = Object.keys(response.data);
+        this.grafico.series.push(Object.values(response.data));
+        this.grafico.disponible = true;
+      });
+    },
     changeId(id) {
       this.idDeleted = id
       this.activePopup = true
@@ -243,6 +363,33 @@ export default {
       this.cleanClient()
       this.isEdit = false
       this.showDialog = true
+    },
+    openReportDialog(item){
+      this.cleanReportDialog()
+      if (item){
+        this.ventasCliente(item.idCliente)
+        this.productosCliente(item.idCliente)
+        this.historicoDeuda(item.idCliente)
+        this.deudaActual = item.deuda
+        this.reportDialog = true
+      }
+    },
+    cleanGrafico(){
+      this.grafico.labels = []
+      this.grafico.series = []
+      this.grafico.disponible= false
+    },
+    cleanReportDialog(){
+      this.cleanGrafico()
+      this.productos = null
+      this.productosCargados = false
+      this.deudas = []
+      this.deudasCargado = false
+      this.deudaActual = 0
+    },
+    closeReportDialog(){
+      this.cleanReportDialog()
+      this.reportDialog = false
     }
   }
 };
