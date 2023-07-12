@@ -52,7 +52,9 @@
       >
         <stats-card data-background-color="green">
           <template slot="header">
-            <md-icon>my_location</md-icon>
+            <router-link :to="rutaZonas">
+              <md-icon>my_location</md-icon>
+            </router-link>
           </template>
 
           <template slot="content">
@@ -70,7 +72,9 @@
       >
         <stats-card data-background-color="blue">
           <template slot="header">
-            <md-icon>account_circle</md-icon>
+            <router-link :to="rutaClientes">
+              <md-icon>account_circle</md-icon>
+            </router-link>
           </template>
 
           <template slot="content">
@@ -85,7 +89,9 @@
       >
         <stats-card data-background-color="orange">
           <template slot="header">
-            <md-icon>assignment_ind</md-icon>
+            <router-link :to="rutaRepartidores">
+              <md-icon>assignment_ind</md-icon>
+            </router-link>
           </template>
 
           <template slot="content">
@@ -100,7 +106,9 @@
       >
         <stats-card data-background-color="red">
           <template slot="header">
-            <md-icon>local_shipping</md-icon>
+            <router-link :to="rutaRepartos">
+              <md-icon>local_shipping</md-icon>
+            </router-link>
           </template>
 
           <template slot="content">
@@ -118,7 +126,9 @@
       >
         <stats-card data-background-color="green">
           <template slot="header">
-            <md-icon>handshake</md-icon>
+            <router-link :to="rutaHistorico">
+              <md-icon>handshake</md-icon>
+            </router-link>
           </template>
 
           <template slot="content">
@@ -386,6 +396,11 @@ export default {
     OrderedTable},  
   data () {
   return {
+    rutaZonas: "/Zonas",
+    rutaClientes: "/Clientes",
+    rutaRepartidores: "/Repartidores",
+    rutaRepartos: "/Repartos",
+    rutaHistorico: "/Historico",
     cantidadClientes: 0,
     cantidadRepartidores: 0,
     cantidadRepartos: 0,
