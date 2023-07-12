@@ -160,7 +160,7 @@
                       <md-table-row slot="md-table-row" slot-scope="{ item }">
                         <md-table-cell md-label="Fecha">{{ item.fecha }}</md-table-cell>
                         <md-table-cell md-label="Pago">{{ item.monto }}</md-table-cell>
-                        <md-table-cell md-label="Comentario">{{ item.comentario }}</md-table-cell>
+                        <md-table-cell md-label="Forma de Pago">{{ item.comentario }}</md-table-cell>
                       </md-table-row>
                     </md-table>
                   </md-card-content>
