@@ -229,8 +229,10 @@
               </div>
               <div class="md-layout-item md-size-100">
                 <md-field>
-                  <label>Comentario</label>
-                  <md-input v-model="deuda.comentario" type="text"></md-input>
+                  <label for="movie">Forma de pago</label>
+                  <md-select md-dense v-model="deuda.comentario">
+                    <md-option v-for="f in formasDePago" :key="f.id" :value="f.comentario">{{f.comentario}}</md-option>
+                  </md-select>
                 </md-field>
               </div>
             </div>
@@ -357,6 +359,11 @@ export default {
         paga: null,
         comentario: null,
       },
+      formasDePago:[
+        {id: 1, comentario: "efectivo"},
+        {id: 2, comentario: "transferencia bancaria"},
+        {id: 3, comentario: "otro"}
+      ],
       showDialog: false,
       showEditDialog: false,
       showFinDialog: false,
