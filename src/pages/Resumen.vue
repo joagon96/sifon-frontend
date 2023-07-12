@@ -104,7 +104,7 @@
           </template>
 
           <template slot="content">
-            <p class="category">Planillas de Reparto</p>
+            <p class="category">Repartos</p>
             <h3 class="title">{{cantidadRepartos}}</h3>
           </template>
 
