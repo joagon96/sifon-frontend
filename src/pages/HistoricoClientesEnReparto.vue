@@ -7,7 +7,7 @@
           <md-card>
             <md-card-header data-background-color="green">
             <div class="md-size-100">
-              <h4 class="title md-size-80">Planilla de Reparto
+              <h4 class="title md-size-80"> Reparto
                 <download-excel style="float: right; margin-right: 20px;"
                 :data   = "this.clientesenreparto"
                 :fields = "this.historicoFields"
@@ -17,6 +17,7 @@
                 </md-button>
               </download-excel>
               </h4>
+              <p>Hecho por {{this.historico.repartidor}} en zona {{this.historico.zona}} el {{ this.historico.fecha }}</p>
             </div>
             </md-card-header>
             <md-card-content>
@@ -46,7 +47,7 @@
 
         <div>
         <md-dialog :md-active.sync="showResumenDialog" style="z-index: 5;">
-          <md-dialog-title>Resumen</md-dialog-title>
+          <md-dialog-title>{{this.historico.zona}} - {{ this.historico.fecha }}</md-dialog-title>
           <div class="md-layout-item md-small-size-100 md-size-100">
             <div class="md-layout md-gutter">
               <div class="md-layout-item md-size-100">
@@ -132,6 +133,7 @@
   export default {
     created() {
       this.getLineas()
+      this.getHistorico()
     },
     data() {
       return {
@@ -197,6 +199,19 @@
           this.clientesenreparto = Object.freeze(response.data)
         });
       },
+      getHistorico() {
+        axios({
+            method: 'GET',
+            url: Config.API_URL + 'get/historico/' + this.$route.params.idHistorico,
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+              "Access-Control-Allow-Origin": "*",
+              "Access-Control-Allow-Credentials": "true"
+            }
+        }).then(response => {
+          this.historico = Object.freeze(response.data[0])
+        });
+      },
       getResumen() {
         axios({
             method: 'GET',
@@ -207,7 +222,6 @@
               "Access-Control-Allow-Credentials": "true"
             }
         }).then(response => {
-          this.resumen.repartidor = response.data[0].repartidor
           this.resumen.com12 = response.data[0].com12
           this.resumen.com20 = response.data[0].com20
           this.resumen.comSoda = response.data[0].comSoda
@@ -216,6 +230,7 @@
           this.resumen.devSoda = response.data[0].devSoda
           this.resumen.pago = response.data[0].pago
           this.resumen.fiado = response.data[0].fiado
+          this.resumen.repartidor = this.historico.repartidor
           this.resumenData = Object.freeze(response.data)
         });
       },
