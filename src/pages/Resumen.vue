@@ -1,47 +1,26 @@
 <template>
   <div class="content">
     <div class="md-layout">
-      <div v-for="grafico in this.graficos1" :key="grafico.id" class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-50">
+      <div v-for="grafico in this.graficos" :key="grafico.id" class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-50">
         <div v-if="grafico.disponible">
           <chart-card
             :chart-data="grafico"
             :chart-type="grafico.tipo"
-            :data-background-color="grafico.color">
+            :data-background-color="grafico.color"
+            :chart-options="grafico.options">
             <template slot="content">
               <h4 class="title">{{grafico.titulo}}</h4>
-                <!-- <p class="category">
-                  <span class="text-success"><i class="fa fa-long-arrow-up"></i> 55% </span> increase in today sales.
-                </p> -->
-            </template>
-  
-            <!-- <template slot="footer">
-              <div class="stats">
-                <md-icon>access_time</md-icon>
-                updated 4 minutes ago
+              <div v-if="grafico.legend">
+                <p>
+                  <span class="legend-box" style="background-color: white;"></span>
+                  Bidon 12L  
+                  <span class="legend-box" style="background-color: red;"></span>
+                  Bidon 20L  
+                  <span class="legend-box" style="background-color: orange;"></span>
+                  Sifon Soda
+                </p>
               </div>
-            </template> -->
-          </chart-card>
-        </div>
-      </div>
-      <div v-for="grafico in this.graficos2" :key="grafico.id" class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-50">
-        <div v-if="grafico.disponible">
-          <chart-card
-            :chart-data="grafico"
-            :chart-type="grafico.tipo"
-            :data-background-color="grafico.color">
-            <template slot="content">
-              <h4 class="title">{{grafico.titulo}}</h4>
-                <!-- <p class="category">
-                  <span class="text-success"><i class="fa fa-long-arrow-up"></i> 55% </span> increase in today sales.
-                </p> -->
             </template>
-  
-            <!-- <template slot="footer">
-              <div class="stats">
-                <md-icon>access_time</md-icon>
-                updated 4 minutes ago
-              </div>
-            </template> -->
           </chart-card>
         </div>
       </div>
@@ -220,6 +199,9 @@
 <script>
 import axios from 'axios';
 import {Config} from '../config.js'
+import Chartist from 'chartist';
+import 'chartist-plugin-tooltip';
+import 'chartist-plugin-pointlabels';
 
 import {
   StatsCard,
@@ -293,14 +275,14 @@ export default {
     },
     ventasMes(){
       axios.get(Config.API_URL + 'reporte/ventasxmes').then(response => {
-        this.graficos1[0].labels = Object.keys(response.data);
-        this.graficos1[0].series.push(Object.values(response.data));
-        this.graficos1[0].disponible = true
+        this.graficos[0].labels = Object.keys(response.data);
+        this.graficos[0].series.push(Object.values(response.data));
+        this.graficos[0].disponible = true
       });
     },
     productosMes(){
       axios.get(Config.API_URL + 'reporte/productosxmes').then(response => {
-        this.graficos1[1].labels = Object.keys(response.data);
+        this.graficos[1].labels = Object.keys(response.data);
         let productos = []
         let bidones12 = []
         let bidones20 = []
@@ -314,38 +296,38 @@ export default {
           bidones20.push(productos[i]['Bidon 20L'])
           sifones.push(productos[i]['Sifon Soda'])
         }
-        this.graficos1[1].series.push(bidones12);
-        this.graficos1[1].series.push(bidones20);
-        this.graficos1[1].series.push(sifones);
-        this.graficos1[1].disponible = true
+        this.graficos[1].series.push(bidones12);
+        this.graficos[1].series.push(bidones20);
+        this.graficos[1].series.push(sifones);
+        this.graficos[1].disponible = true
       });
     },
     repartosMes(){
       axios.get(Config.API_URL + 'reporte/repartosxmes').then(response => {
-        this.graficos1[2].labels = Object.keys(response.data);
-        this.graficos1[2].series.push(Object.values(response.data));
-        this.graficos1[2].disponible = true
+        this.graficos[2].labels = Object.keys(response.data);
+        this.graficos[2].series.push(Object.values(response.data));
+        this.graficos[2].disponible = true
       });
     },
     clientesZona(){
       axios.get(Config.API_URL + 'reporte/clientesxzona').then(response => {
-        this.graficos2[0].labels = Object.keys(response.data);
-        this.graficos2[0].series.push(Object.values(response.data));
-        this.graficos2[0].disponible = true
+        this.graficos[3].labels = Object.keys(response.data);
+        this.graficos[3].series.push(Object.values(response.data));
+        this.graficos[3].disponible = true
       });
     },
     repartosZona(){
       axios.get(Config.API_URL + 'reporte/repartosxzona').then(response => {
-        this.graficos2[1].labels = Object.keys(response.data);
-        this.graficos2[1].series.push(Object.values(response.data));
-        this.graficos2[1].disponible = true
+        this.graficos[4].labels = Object.keys(response.data);
+        this.graficos[4].series.push(Object.values(response.data));
+        this.graficos[4].disponible = true
       });
     },
     repartosDia(){
       axios.get(Config.API_URL + 'reporte/repartosxdia').then(response => {
-        this.graficos2[2].labels = Object.keys(response.data);
-        this.graficos2[2].series.push(Object.values(response.data));
-        this.graficos2[2].disponible = true
+        this.graficos[5].labels = Object.keys(response.data);
+        this.graficos[5].series.push(Object.values(response.data));
+        this.graficos[5].disponible = true
       });
     },
     topClientes(){
@@ -429,7 +411,7 @@ export default {
         fiado: 0,
       }
     ],
-    graficos1:[
+    graficos:[
       {
         id: 1,
         labels: [],
@@ -437,7 +419,18 @@ export default {
         disponible: false,
         tipo: "Line",
         color: "green",
-        titulo: "Ventas por mes"
+        titulo: "Ventas por mes",
+        options:{
+          chartPadding: {
+              top: 30
+          },
+          plugins: [
+            Chartist.plugins.ctPointLabels({
+              textAnchor: 'middle',
+              labelClass: 'custom-point-label',
+            })
+          ]
+        }
       },
       {
         id: 2,
@@ -446,7 +439,19 @@ export default {
         disponible: false,
         tipo: "Bar",
         color: "blue",
-        titulo: "Productos vendidos por mes"
+        titulo: "Productos vendidos por mes",
+        options:{
+          chartPadding: {
+              top: 30
+          },
+          plugins: [
+            Chartist.plugins.ctPointLabels({
+              textAnchor: 'middle',
+              labelClass: 'custom-point-label',
+            })
+          ]
+        },
+        legend: true
       },
       {
         id: 3,
@@ -455,36 +460,79 @@ export default {
         disponible: false,
         tipo: "Line",
         color: "orange",
-        titulo: "Repartos realizados por mes"
-      }
-    ],
-    graficos2:[
+        titulo: "Repartos realizados por mes",
+        options:{
+          chartPadding: {
+              top: 30
+          },
+          plugins: [
+            Chartist.plugins.ctPointLabels({
+              textAnchor: 'middle',
+              labelClass: 'custom-point-label',
+            })
+          ]
+        }
+      },
       {
-        id: 1,
+        id: 4,
         labels: [],
         series: [],
         disponible: false,
         tipo: "Line",
         color: "green",
-        titulo: "Clientes por zona"
+        titulo: "Clientes por zona",
+        options:{
+          chartPadding: {
+              top: 30
+          },
+          plugins: [
+            Chartist.plugins.ctPointLabels({
+              textAnchor: 'middle',
+              labelClass: 'custom-point-label',
+            })
+          ]
+        }
       },
       {
-        id: 2,
+        id: 5,
         labels: [],
         series: [],
         disponible: false,
         tipo: "Line",
         color: "blue",
-        titulo: "Repartos por zona"
+        titulo: "Repartos por zona",
+        options:{
+          chartPadding: {
+              top: 30
+          },
+          plugins: [
+            Chartist.plugins.ctPointLabels({
+              textAnchor: 'middle',
+              labelClass: 'custom-point-label',
+            })
+          ]
+        }
       },
       {
-        id: 3,
+        id: 6,
         labels: [],
         series: [],
         disponible: false,
         tipo: "Line",
         color: "orange",
-        titulo: "Repartos por dia"
+        titulo: "Repartos por dia",
+        options:{
+          chartPadding: {
+              top: 30
+          },
+          plugins: [
+            Chartist.plugins.ctPointLabels({
+              textAnchor: 'middle',
+              labelClass: 'custom-point-label',
+              labelInterpolationFnc: value => (value !== undefined ? value : 0)
+            })
+          ]
+        }
       }
     ],
     clientes:{},
@@ -498,3 +546,17 @@ export default {
 };
 
 </script>
+
+<style>
+.custom-point-label {
+  color: white;
+}
+
+.legend-box {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 5px;
+}
+
+</style>
