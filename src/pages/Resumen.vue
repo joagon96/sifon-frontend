@@ -13,9 +13,9 @@
               <div v-if="grafico.legend">
                 <p>
                   <span class="legend-box" style="background-color: white;"></span>
-                  Bidon 12L  
+                  Bidon 12L &nbsp;&nbsp;
                   <span class="legend-box" style="background-color: red;"></span>
-                  Bidon 20L  
+                  Bidon 20L &nbsp;&nbsp;
                   <span class="legend-box" style="background-color: orange;"></span>
                   Sifon Soda
                 </p>
@@ -548,15 +548,16 @@ export default {
 </script>
 
 <style>
-.custom-point-label {
-  color: white;
+.ct-point.custom-point-label {
+  color: #FFFFFF !important;
 }
 
 .legend-box {
   display: inline-block;
   width: 10px;
   height: 10px;
-  margin-right: 5px;
+  margin-right: 1px;
+  border: 1px solid #000;
 }
 
 </style>
