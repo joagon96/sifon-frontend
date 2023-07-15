@@ -442,16 +442,20 @@ export default {
         titulo: "Productos vendidos por mes",
         options:{
           chartPadding: {
-              top: 30
+              top: 30,
           },
           plugins: [
             Chartist.plugins.ctPointLabels({
               textAnchor: 'middle',
               labelClass: 'custom-point-label',
+              labelOffset: {
+                x: 0,
+                y: 30
+              },
             })
           ]
         },
-        legend: true
+        legend: true,
       },
       {
         id: 3,
@@ -548,7 +552,7 @@ export default {
 </script>
 
 <style>
-.ct-point.custom-point-label {
+.custom-point-label {
   color: #FFFFFF !important;
 }
 
