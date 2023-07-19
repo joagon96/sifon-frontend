@@ -24,7 +24,7 @@
             <div>
               <md-table v-model="this.clientesenreparto" table-header-color="green">
                 <md-table-row slot="md-table-row" slot-scope="{ item }">
-                  <md-table-cell md-label="Nombre">{{ item.nomapeCli }}<md-icon v-if="item.deuda>0">error</md-icon></md-table-cell>
+                  <md-table-cell md-label="Nombre"><md-icon style="color: red" v-if="item.deuda > 0">error</md-icon>{{ item.nomapeCli }}</md-table-cell>
                   <md-table-cell md-label="Domicilio">{{ item.domicilio }}</md-table-cell>
                   <md-table-cell md-label="Compra 12L">{{item.com12}}</md-table-cell>
                   <md-table-cell md-label="Compra 20L">{{item.com20}}</md-table-cell>
@@ -37,7 +37,7 @@
                   <md-table-cell md-label="Observaciones">{{truncateText(item.observacion,15)}}</md-table-cell>
                   <md-table-cell md-label="Acciones">
                     <div>
-                      <md-button class="md-icon-button md-fab md-warning md-raised" @click="editLineaReparto(item.idLR)">
+                      <md-button class="md-icon-button md-fab md-warning md-raised" @click="editLineaReparto(item.idLR, item.deuda)">
                         <md-icon>edit</md-icon>
                       </md-button>
                     </div>
@@ -107,6 +107,11 @@
 
       <div>
         <md-dialog :md-active.sync="showEditDialog" style="z-index: 5;">
+          <div class="md-layout-item md-small-size-100 md-size-100" v-if="this.wanrningDueda">
+            <md-toolbar class="md-danger" style="margin-top: 10px;">
+              <h3 class="md-title">El cliente presenta un saldo pendiente/deuda en este momento</h3>
+            </md-toolbar>
+          </div>
           <md-dialog-title>Editar cliente</md-dialog-title>
           <div class="md-layout-item md-small-size-100 md-size-100">
             <div class="md-layout md-gutter">
@@ -411,6 +416,7 @@ export default {
         'Sifones Soda devueltos': 'devSoda'
       },
       resumenName: 'Resumen de Reparto en curso zona' + this.$route.params.zonaSelected + ' ' + moment(Date.now()).format("DD-MM-YYYY"),
+      wanrningDueda: false
     };
   },
   methods: {
@@ -479,7 +485,7 @@ export default {
         this.resumenData = Object.freeze(response.data)
       });
     },
-    editLineaReparto(idLR){
+    editLineaReparto(idLR, deuda){
       axios.get(Config.API_URL + 'get/LineaRepartoTotal/'+idLR).then(response => {
         this.newlineareparto.idLR = response.data[0].idLR
         this.newlineareparto.idCliente = response.data[0].idCliente
@@ -498,6 +504,7 @@ export default {
         this.newlineareparto.observacion = response.data[0].observacion
       });
       this.showEditDialog = true
+      this.wanrningDueda = deuda > 0
     },
     createLineaReparto() {
       var bodyFormData = new FormData();
@@ -652,8 +659,8 @@ export default {
   font-size: 40px;
 }
 
-.md-tooltip{
-  max-width: 500px !important;
-  width: 400px !important;
+.custom-toolbar {
+  background-color: red; /* Color de fondo rojo */
+  color: white; /* Color del texto en la barra de herramientas (opcional) */
 }
 </style>
