@@ -112,7 +112,7 @@
               <h3 class="md-title">El cliente presenta un saldo pendiente/deuda en este momento</h3>
             </md-toolbar>
           </div>
-          <md-dialog-title>Editar cliente</md-dialog-title>
+          <md-dialog-title>Reparto</md-dialog-title>
           <div class="md-layout-item md-small-size-100 md-size-100">
             <div class="md-layout md-gutter">
               <div class="md-layout-item md-size-100">
@@ -124,13 +124,13 @@
               <div class="md-layout-item md-size-33">
                 <md-field>
                   <label>Bidones estimados 12L</label>
-                  <md-input v-model="newlineareparto.est12" type="number"></md-input>
+                  <md-input v-model="newlineareparto.est12" type="number" disabled></md-input>
                 </md-field>
               </div>
               <div class="md-layout-item md-size-33">
                 <md-field>
                   <label>Bidones comprados 12L</label>
-                  <md-input v-model="newlineareparto.com12" type="number"></md-input>
+                  <md-input v-model="newlineareparto.com12" type="number" @input="updateTotalAPagar"></md-input>
                 </md-field>
               </div>
               <div class="md-layout-item md-size-33">
@@ -142,13 +142,13 @@
               <div class="md-layout-item md-size-33">
                 <md-field>
                   <label>Bidones estimados 20L</label>
-                  <md-input v-model="newlineareparto.est20" type="number"></md-input>
+                  <md-input v-model="newlineareparto.est20" type="number" disabled></md-input>
                 </md-field>
               </div>
               <div class="md-layout-item md-size-33">
                 <md-field>
                   <label>Bidones comprados 20L</label>
-                  <md-input v-model="newlineareparto.com20" type="number"></md-input>
+                  <md-input v-model="newlineareparto.com20" type="number" @input="updateTotalAPagar"></md-input>
                 </md-field>
               </div>
               <div class="md-layout-item md-size-33">
@@ -160,13 +160,13 @@
               <div class="md-layout-item md-size-33">
                 <md-field>
                   <label>Sifones estimados</label>
-                  <md-input v-model="newlineareparto.estSoda" type="number"></md-input>
+                  <md-input v-model="newlineareparto.estSoda" type="number" disabled></md-input>
                 </md-field>
               </div>
               <div class="md-layout-item md-size-33">
                 <md-field>
                   <label>Sifones comprados</label>
-                  <md-input v-model="newlineareparto.comSoda" type="number"></md-input>
+                  <md-input v-model="newlineareparto.comSoda" type="number" @input="updateTotalAPagar"></md-input>
                 </md-field>
               </div>
               <div class="md-layout-item md-size-33">
@@ -175,17 +175,20 @@
                   <md-input v-model="newlineareparto.devSoda" type="number"></md-input>
                 </md-field>
               </div>
+              <div class="md-layout-item md-size-100" style="padding-bottom: 20px; padding-top: 20px;">
+                  <label style="font-size: 20px;">Total a pagar {{ this.totalAPagar }}<md-icon>attach_money</md-icon></label>
+              </div>
               <div class="md-layout-item md-size-50">
                 <md-field>
                   <label>Pago</label>
-                  <md-input v-model="newlineareparto.pago" type="number"></md-input>
+                  <md-input v-model="newlineareparto.pago" type="number" @input="updateFiado"></md-input>
                   <md-icon>attach_money</md-icon>
                 </md-field>
               </div>
               <div class="md-layout-item md-size-50">
                 <md-field>
                   <label>Fiado</label>
-                  <md-input v-model="newlineareparto.fiado" type="number"></md-input>
+                  <md-input v-model="newlineareparto.fiado" type="number" disabled></md-input>
                   <md-icon>attach_money</md-icon>
                 </md-field>
               </div>
@@ -337,6 +340,7 @@ import moment from 'moment';
 export default {
   created() {
     this.getLineas()
+    this.getProductos()
   },
   data() {
     return {
@@ -416,7 +420,12 @@ export default {
         'Sifones Soda devueltos': 'devSoda'
       },
       resumenName: 'Resumen de Reparto en curso zona' + this.$route.params.zonaSelected + ' ' + moment(Date.now()).format("DD-MM-YYYY"),
-      wanrningDueda: false
+      wanrningDueda: false,
+      totalAPagar: 0,
+      productos: [],
+      valor12L: 0,
+      valor20L: 0,
+      valorSoda: 0
     };
   },
   methods: {
@@ -448,6 +457,34 @@ export default {
           }
       }).then(response => {
         this.clientesFaltantes=response.data
+      });
+    },
+    updateTotalAPagar() {
+      const com12 = parseInt(this.newlineareparto.com12) || 0;
+      const com20 = parseInt(this.newlineareparto.com20) || 0;
+      const comSoda = parseInt(this.newlineareparto.comSoda) || 0;
+      this.totalAPagar = com12 * this.valor12L + com20 * this.valor20L + comSoda * this.valorSoda;
+    },
+    updateFiado() {
+      const fia = this.totalAPagar - this.newlineareparto.pago > 0 ? this.totalAPagar - this.newlineareparto.pago : 0
+      this.newlineareparto.fiado = fia;
+    },
+    getProductos() {
+      axios.get(Config.API_URL + 'get/Producto',{headers: {"Authorization": localStorage.token}}).then(response => {
+        this.productos = Object.freeze(response.data)
+        console.log(this.productos)
+
+        for (const producto of this.productos){
+          if (producto.idProducto == 1){
+            this.valor12L = producto.valor
+          }
+          if (producto.idProducto == 2){
+            this.valor20L = producto.valor
+          }
+          if (producto.idProducto == 3){
+            this.valorSoda = producto.valor
+          }
+        }
       });
     },
     getLineas() {
