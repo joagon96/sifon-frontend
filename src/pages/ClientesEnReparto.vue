@@ -58,7 +58,7 @@
           </md-card-content>
         </md-card>
         <div class="md-size-100">
-            <md-button class="md-raised md-info md-size-20" style="float: right; margin-top: 10px" @click="showFinDialog = true">Finalizar Reparto</md-button>
+            <md-button class="md-raised md-info md-size-20" style="float: right; margin-top: 10px" @click="openFinishDialog()">Finalizar Reparto</md-button>
         </div>
         <div class="md-size-100">
             <md-button class="md-raised md-success md-size-20" style="float: right; margin-top: 10px; margin-right: 10px;" @click="resumenReparto()">Ver Resumen</md-button>
@@ -329,6 +329,12 @@
         </md-dialog>
       </div>
     </div>
+
+    <md-snackbar :md-position="center" :md-duration="4000" :md-active.sync="showSnackbar" md-persistent style="background-color: #f44336;">
+      <span>No se realizo ninguna entrega</span>
+      <md-button class="md-danger" @click="showSnackbar = false">OK</md-button>
+    </md-snackbar>
+
   </div>
 </template>
 
@@ -425,7 +431,8 @@ export default {
       productos: [],
       valor12L: 0,
       valor20L: 0,
-      valorSoda: 0
+      valorSoda: 0,
+      showSnackbar: false
     };
   },
   methods: {
@@ -671,6 +678,14 @@ export default {
       this.cleanLinea()
       this.isEdit = false
       this.showDialog = true
+    },
+    openFinishDialog(){
+      this.getResumen()
+      if (this.resumen.com12 + this.resumen.com20 + this.resumen.comSoda == 0){
+        this.showSnackbar = true
+        return
+      }
+      this.showFinDialog = true
     },
     closeDeudaDialog(){
       this.showDeudaDialog = false

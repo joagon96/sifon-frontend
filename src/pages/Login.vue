@@ -20,6 +20,13 @@
       </div>
       <md-button class="md-round md-info" @click="login(username, password)">Login</md-button>
     </md-card-content>
+    <div>
+      <md-snackbar :md-duration="4000" :md-active.sync="showSnackbar" md-persistent style="background-color: #f44336;">
+      <span>{{ this.errorMessage }}</span>
+      <md-button class="md-danger" @click="showSnackbar = false">OK</md-button>
+    </md-snackbar>
+    </div>
+
   </md-card>
 </template>
 
@@ -42,7 +49,9 @@ export default {
   data() {
     return {
         username: '',
-        password: ''
+        password: '',
+        showSnackbar: false,
+        errorMessage: ""
     };
   },
   methods: {
@@ -75,7 +84,10 @@ export default {
               this.$router.push({name: 'Repartos'})
             }
           }
-        });
+        }).catch(error => {
+          this.errorMessage = error.response.status == 401 ? "Las credenciales ingresadas no son validas" : error
+          this.showSnackbar = true
+        });;
       }
   }
 };
