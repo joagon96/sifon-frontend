@@ -1,8 +1,6 @@
 module.exports = {
   devServer: {
     disableHostCheck: true,
-    proxy: "http://192.168.0.17:80",
-    public: '0.0.0.0:8080',
     hot: true,
   }
 };
