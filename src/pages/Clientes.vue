@@ -101,19 +101,13 @@
                       <chart-card
                         :chart-data="grafico"
                         :chart-type="grafico.tipo"
-                        :data-background-color="grafico.color">
+                        :data-background-color="grafico.color"
+                        :chart-options="grafico.options">
                         <template slot="content">
                             <p class="category">
                               {{grafico.titulo}}
                             </p>
                         </template>
-              
-                        <!-- <template slot="footer">
-                          <div class="stats">
-                            <md-icon>access_time</md-icon>
-                            updated 4 minutes ago
-                          </div>
-                        </template> -->
                       </chart-card>
 
                       <md-card>
@@ -190,6 +184,9 @@ import {
   ChartCard,
   StatsCard,
 } from "@/components";
+import Chartist from 'chartist';
+import 'chartist-plugin-tooltip';
+import 'chartist-plugin-pointlabels';
 
 export default {
   name: 'DialogConfirm',
@@ -230,7 +227,19 @@ export default {
         disponible: false,
         tipo: "Line",
         color: "green",
-        titulo: "Ventas por mes"
+        titulo: "Ventas por mes",
+        options:{
+          chartPadding: {
+              top: 30
+          },
+          plugins: [
+            Chartist.plugins.ctPointLabels({
+              textAnchor: 'middle',
+              labelClass: 'custom-point-label',
+              labelInterpolationFnc: value => (value !== undefined ? value : 0)
+            })
+          ]
+        }
       },
       productos: {},
       productosCargados: false,
@@ -399,5 +408,9 @@ export default {
 <style>
 .title {
   font-size: 40px;
+}
+
+.custom-point-label {
+  color: #FFFFFF !important;
 }
 </style>
