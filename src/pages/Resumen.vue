@@ -1,6 +1,39 @@
 <template>
   <div class="content">
     <div class="md-layout">
+
+      <div v-if="repartosCargados"
+        class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100"
+      >
+        <md-card>
+          <md-card-header data-background-color="green">
+            <h4 class="title">Repartos planificados para hoy</h4>
+          </md-card-header>
+          <md-card-content>
+           <div>
+            <md-table>
+              <md-table-row>
+                <md-table-head>Zona</md-table-head>
+                <md-table-head>Repartidor</md-table-head>
+                <md-table-head>Ver</md-table-head>
+              </md-table-row>
+              <md-table-row v-for="reparto in repartos" :key="reparto.idReparto">
+                <md-table-cell>{{ reparto.descripcion }}</md-table-cell>
+                <md-table-cell>{{ reparto.nomapeRep }}</md-table-cell>
+                <md-table-cell>
+                  <div>
+                    <md-button class="md-icon-button md-fab md-info md-raised" @click="showClientes(reparto.idZona, reparto.descripcion, reparto.idReparto)">
+                      <md-icon>visibility</md-icon>
+                    </md-button>
+                  </div>
+                </md-table-cell>
+              </md-table-row>
+            </md-table>
+            </div>
+          </md-card-content>
+        </md-card> 
+      </div> 
+
       <div v-for="grafico in this.graficos" :key="grafico.id" class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-50">
         <div v-if="grafico.disponible">
           <chart-card
@@ -213,6 +246,16 @@ import {
 
 export default {
   methods: {
+    showClientes(idz, dz, idr) {
+      this.$router.push({
+        name: "Clientes en Reparto",
+        params: {
+          idZona: idz,
+          zonaSelected: dz,
+          idReparto: idr
+        }
+      })
+    },
     cantClientes() {
       axios.get(Config.API_URL + 'CantClientes').then(response => {
         console.log(response.data);
@@ -348,6 +391,34 @@ export default {
         this.productosCargados = true
       });
     },
+    searchRepartos() {
+      const now = new Date();
+      const dia = now.getDay();
+      const dias = [
+        'Domingo',
+        'Lunes',
+        'Martes',
+        'Miercoles',
+        'Jueves',
+        'Viernes',
+        'Sabado',
+      ];
+      var bodyFormData = new FormData();
+      bodyFormData.append('dia', dias[dia]) ;
+      axios({
+        method: 'POST',
+        url: Config.API_URL + 'search/reparto',
+        data: bodyFormData,
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Credentials": "true"
+        }
+      }).then(response => {
+        this.repartos = response.data
+        this.repartosCargados = true
+      });
+    },
   },
   mounted() {
     this.cantClientes()
@@ -369,6 +440,7 @@ export default {
     this.topClientes()
     this.topDeudores()
     this.topProductos()
+    this.searchRepartos()
   },
   components: {
     StatsCard,
@@ -444,16 +516,6 @@ export default {
           chartPadding: {
               top: 30,
           },
-          plugins: [
-            Chartist.plugins.ctPointLabels({
-              textAnchor: 'middle',
-              labelClass: 'custom-point-label',
-              labelOffset: {
-                x: 0,
-                y: 30
-              },
-            })
-          ]
         },
         legend: true,
       },
@@ -545,6 +607,8 @@ export default {
     deudoresCargados: false,
     productos:{},
     productosCargados: false,
+    repartos: [],
+    repartosCargados: false
   }
 } 
 };
