@@ -41,7 +41,7 @@
                   <div class="md-layout-item md-size-100">
                     <md-field>
                       <label>valor</label>
-                      <md-input v-model="producto.valor" type="text"></md-input>
+                      <md-input v-model="producto.valor" type="number" min="0"></md-input>
                     </md-field>
                   </div>
                 </div>

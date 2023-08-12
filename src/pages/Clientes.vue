@@ -67,7 +67,7 @@
                   <div class="md-layout-item md-size-100">
                     <md-field>
                       <label>Telefono</label>
-                      <md-input v-model="newClient.telefono" type="text"></md-input>
+                      <md-input v-model="newClient.telefono" type="number" min="0"></md-input>
                     </md-field>
                   </div>
                   <div class="md-layout-item">

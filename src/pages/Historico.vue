@@ -5,7 +5,7 @@
             <md-card>
                 <md-card-header data-background-color="green">
                   <div class="md-size-80">  
-                    <h4 class="title md-size-80">Historico Repartos
+                    <h4 class="title md-size-80">Histórico Repartos
                       <md-button class="md-raised md-info md-size-20" style="float: right; margin-top: 10px" @click="showSearchDialog()"><md-icon>tune</md-icon> Filtros</md-button>
                     </h4>
                   </div>

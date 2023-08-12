@@ -182,7 +182,7 @@
       >
         <md-card>
           <md-card-header data-background-color="blue">
-            <h4 class="title">Ranking de Duedores</h4>
+            <h4 class="title">Ranking de Deudores</h4>
           </md-card-header>
           <md-card-content>
            <div>

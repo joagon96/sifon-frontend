@@ -24,7 +24,10 @@
             <div>
               <md-table v-model="this.clientesenreparto" table-header-color="green">
                 <md-table-row slot="md-table-row" slot-scope="{ item }">
-                  <md-table-cell md-label="Nombre"><md-icon style="color: red" v-if="item.deuda > 0">error</md-icon>{{ item.nomapeCli }}</md-table-cell>
+                  <md-table-cell md-label="Nombre">
+                    <md-icon style="color: red" v-if="item.deuda > 0">error</md-icon>
+                    <md-icon style="color: green" v-if="item.deuda < 0">error</md-icon>
+                    {{ item.nomapeCli }}</md-table-cell>
                   <md-table-cell md-label="Domicilio">{{ item.domicilio }}</md-table-cell>
                   <md-table-cell md-label="Compra 12L">{{item.com12}}</md-table-cell>
                   <md-table-cell md-label="Compra 20L">{{item.com20}}</md-table-cell>
@@ -47,7 +50,7 @@
                       </md-button>
                     </div>
                     <div>
-                      <md-button class="md-icon-button md-fab md-success md-raised" @click="deudaDialog(item.idCliente,item.nomapeCli,item.deuda)">
+                      <md-button class="md-icon-button md-fab md-success md-raised" :disabled="!(item.deuda > 0)" @click="deudaDialog(item.idCliente,item.nomapeCli,item.deuda)">
                         <md-icon>price_check</md-icon>
                       </md-button>
                     </div>
@@ -81,19 +84,19 @@
               <div class="md-layout-item">
                 <md-field>
                   <label>Bidones 12L estimados</label>
-                  <md-input v-model="newlineareparto.est12" type="text"></md-input>
+                  <md-input v-model="newlineareparto.est12" type="number" min="0"></md-input>
                 </md-field>
               </div>
               <div class="md-layout-item">
                 <md-field>
                   <label>Bidones 20L estimados</label>
-                  <md-input v-model="newlineareparto.est20" type="text"></md-input>
+                  <md-input v-model="newlineareparto.est20" type="number" min="0"></md-input>
                 </md-field>
               </div>
               <div class="md-layout-item">
                 <md-field>
                   <label>Sifones Soda estimados</label>
-                  <md-input v-model="newlineareparto.estSoda" type="text"></md-input>
+                  <md-input v-model="newlineareparto.estSoda" type="number" min="0"></md-input>
                 </md-field>
               </div>
             </div>
@@ -112,6 +115,11 @@
               <h3 class="md-title">El cliente presenta un saldo pendiente/deuda en este momento</h3>
             </md-toolbar>
           </div>
+          <div class="md-layout-item md-small-size-100 md-size-100" v-if="this.warningAFavor">
+            <md-toolbar class="md-success" style="margin-top: 10px;">
+              <h3 class="md-title">El cliente presenta saldo a favor en este momento</h3>
+            </md-toolbar>
+          </div>
           <md-dialog-title>Reparto</md-dialog-title>
           <div class="md-layout-item md-small-size-100 md-size-100">
             <div class="md-layout md-gutter">
@@ -124,55 +132,55 @@
               <div class="md-layout-item md-size-33">
                 <md-field>
                   <label>Bidones estimados 12L</label>
-                  <md-input v-model="newlineareparto.est12" type="number" disabled></md-input>
+                  <md-input v-model="newlineareparto.est12" type="number" min="0" disabled></md-input>
                 </md-field>
               </div>
               <div class="md-layout-item md-size-33">
                 <md-field>
                   <label>Bidones comprados 12L</label>
-                  <md-input v-model="newlineareparto.com12" type="number" @input="updateTotalAPagar"></md-input>
+                  <md-input v-model="newlineareparto.com12" type="number" min="0" @input="updateTotalAPagar"></md-input>
                 </md-field>
               </div>
               <div class="md-layout-item md-size-33">
                 <md-field>
                   <label>Bidones devueltos 12L</label>
-                  <md-input v-model="newlineareparto.dev12" type="number"></md-input>
+                  <md-input v-model="newlineareparto.dev12" type="number" min="0"></md-input>
                 </md-field>
               </div>
               <div class="md-layout-item md-size-33">
                 <md-field>
                   <label>Bidones estimados 20L</label>
-                  <md-input v-model="newlineareparto.est20" type="number" disabled></md-input>
+                  <md-input v-model="newlineareparto.est20" type="number" min="0" disabled></md-input>
                 </md-field>
               </div>
               <div class="md-layout-item md-size-33">
                 <md-field>
                   <label>Bidones comprados 20L</label>
-                  <md-input v-model="newlineareparto.com20" type="number" @input="updateTotalAPagar"></md-input>
+                  <md-input v-model="newlineareparto.com20" type="number" min="0" @input="updateTotalAPagar"></md-input>
                 </md-field>
               </div>
               <div class="md-layout-item md-size-33">
                 <md-field>
                   <label>Bidones devueltos 20L</label>
-                  <md-input v-model="newlineareparto.dev20" type="number"></md-input>
+                  <md-input v-model="newlineareparto.dev20" type="number" min="0"></md-input>
                 </md-field>
               </div>
               <div class="md-layout-item md-size-33">
                 <md-field>
                   <label>Sifones estimados</label>
-                  <md-input v-model="newlineareparto.estSoda" type="number" disabled></md-input>
+                  <md-input v-model="newlineareparto.estSoda" type="number" min="0" disabled></md-input>
                 </md-field>
               </div>
               <div class="md-layout-item md-size-33">
                 <md-field>
                   <label>Sifones comprados</label>
-                  <md-input v-model="newlineareparto.comSoda" type="number" @input="updateTotalAPagar"></md-input>
+                  <md-input v-model="newlineareparto.comSoda" type="number" min="0" @input="updateTotalAPagar"></md-input>
                 </md-field>
               </div>
               <div class="md-layout-item md-size-33">
                 <md-field>
                   <label>Sifones devueltos</label>
-                  <md-input v-model="newlineareparto.devSoda" type="number"></md-input>
+                  <md-input v-model="newlineareparto.devSoda" type="number" min="0"></md-input>
                 </md-field>
               </div>
               <div class="md-layout-item md-size-100" style="padding-bottom: 20px; padding-top: 20px;">
@@ -181,7 +189,7 @@
               <div class="md-layout-item md-size-50">
                 <md-field>
                   <label>Pago</label>
-                  <md-input v-model="newlineareparto.pago" type="number" @input="updateFiado"></md-input>
+                  <md-input v-model="newlineareparto.pago" type="number" min="0" @input="updateFiado"></md-input>
                   <md-icon>attach_money</md-icon>
                 </md-field>
               </div>
@@ -232,7 +240,7 @@
               <div class="md-layout-item md-size-100">
                 <md-field>
                   <label>Paga</label>
-                  <md-input v-model="deuda.paga" type="number"></md-input>
+                  <md-input v-model="deuda.paga" type="number" min="0"></md-input>
                 </md-field>
               </div>
               <div class="md-layout-item md-size-100">
@@ -365,7 +373,8 @@ export default {
         devSoda:null,
         pago: null,
         fiado: null,
-        observacion: null
+        observacion: null,
+        deuda: null,
       },
       deuda:{
         idCliente: null,
@@ -427,6 +436,7 @@ export default {
       },
       resumenName: 'Resumen de Reparto en curso zona' + this.$route.params.zonaSelected + ' ' + moment(Date.now()).format("DD-MM-YYYY"),
       wanrningDueda: false,
+      warningAFavor: false,
       totalAPagar: 0,
       productos: [],
       valor12L: 0,
@@ -470,11 +480,14 @@ export default {
       const com12 = parseInt(this.newlineareparto.com12) || 0;
       const com20 = parseInt(this.newlineareparto.com20) || 0;
       const comSoda = parseInt(this.newlineareparto.comSoda) || 0;
-      this.totalAPagar = com12 * this.valor12L + com20 * this.valor20L + comSoda * this.valorSoda;
+      this.totalAPagar = com12 * this.valor12L + com20 * this.valor20L + comSoda * this.valorSoda + this.newlineareparto.deuda;
     },
     updateFiado() {
-      const fia = this.totalAPagar - this.newlineareparto.pago > 0 ? this.totalAPagar - this.newlineareparto.pago : 0
-      this.newlineareparto.fiado = fia;
+      if (this.totalAPagar < 0) {
+        this.newlineareparto.fiado = this.totalAPagar - (-this.newlineareparto.pago)
+      } else {
+        this.newlineareparto.fiado = this.totalAPagar - this.newlineareparto.pago
+      };
     },
     getProductos() {
       axios.get(Config.API_URL + 'get/Producto',{headers: {"Authorization": localStorage.token}}).then(response => {
@@ -547,8 +560,11 @@ export default {
         this.newlineareparto.fiado = response.data[0].fiado
         this.newlineareparto.observacion = response.data[0].observacion
       });
-      this.showEditDialog = true
+      this.totalAPagar = deuda
+      this.newlineareparto.deuda = deuda
       this.wanrningDueda = deuda > 0
+      this.warningAFavor = deuda < 0
+      this.showEditDialog = true
     },
     createLineaReparto() {
       var bodyFormData = new FormData();
@@ -680,12 +696,25 @@ export default {
       this.showDialog = true
     },
     openFinishDialog(){
-      this.getResumen()
-      if (this.resumen.com12 + this.resumen.com20 + this.resumen.comSoda == 0){
-        this.showSnackbar = true
-        return
-      }
-      this.showFinDialog = true
+      axios({
+          method: 'GET',
+          url: Config.API_URL + 'resumen/reparto/' + this.$route.params.idReparto,
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": "true"
+          }
+      }).then(response => {
+        const com12 = response.data[0].com12
+        const com20 = response.data[0].com20
+        const comSoda = response.data[0].comSoda
+        if (com12 + com20 + comSoda == 0){
+          this.showSnackbar = true
+          return
+        }else{
+          this.showFinDialog = true
+        }
+      });
     },
     closeDeudaDialog(){
       this.showDeudaDialog = false
@@ -700,6 +729,9 @@ export default {
         return text.slice(0, stop) + (stop < text.length ? clamp || '...' : '')
       }
       return '-'
+    },
+    sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
     }
   }
 };
