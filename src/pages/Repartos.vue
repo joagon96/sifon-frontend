@@ -51,7 +51,8 @@
                 </md-card-content>
                 <div>
                   <md-dialog :md-active.sync="showDialog" style="z-index: 5;">
-                    <md-dialog-title>Crear Reparto</md-dialog-title>
+                    <md-dialog-title v-if="isEdit">Editar Reparto</md-dialog-title>
+                    <md-dialog-title v-else>Crear Reparto</md-dialog-title>
                     <div class="md-layout-item md-small-size-100 md-size-100">
                       <div class="md-layout md-gutter">
                         <div class="md-layout-item">

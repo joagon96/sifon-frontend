@@ -22,8 +22,8 @@
           </md-card-header>
           <md-card-content>
             <div>
-              <md-table v-model="this.clientes" table-header-color="green" @md-selected="openReportDialog">
-                <md-table-row slot="md-table-row" slot-scope="{ item }" md-selectable="single">
+              <md-table v-model="this.clientes" table-header-color="green">
+                <md-table-row slot="md-table-row" slot-scope="{ item }">
                   <md-table-cell md-label="Nombre">{{ item.nomapeCli }}</md-table-cell>
                   <md-table-cell md-label="Domicilio">{{ item.domicilio }}</md-table-cell>
                   <md-table-cell md-label="Teléfono">{{ item.telefonoCli }}</md-table-cell>
@@ -48,6 +48,11 @@
                           <md-icon>delete_forever</md-icon>
                         </md-button>
                     </div>
+                    <div>
+                      <md-button class="md-icon-button md-fab md-info md-raised" @click="openReportDialog(item)">
+                        <md-icon>visibility</md-icon>
+                      </md-button>
+                    </div>
                   </md-table-cell>
                 </md-table-row>
               </md-table>
@@ -55,7 +60,8 @@
           </md-card-content>
           <div>
             <md-dialog :md-active.sync="showDialog" style="z-index: 5;">
-              <md-dialog-title>Crear cliente</md-dialog-title>
+              <md-dialog-title v-if="isEdit">Editar cliente</md-dialog-title>
+              <md-dialog-title v-else>Crear cliente</md-dialog-title>
               <div class="md-layout-item md-small-size-100 md-size-100">
                 <div class="md-layout md-gutter">
                   <div class="md-layout-item md-size-100">
@@ -133,17 +139,31 @@
 
                 <div class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-50">
 
-                  <stats-card data-background-color="red">
-                    <template slot="header">
-                      <md-icon>money_off</md-icon>
-                    </template>
+                  <div v-if="this.deudaActual < 0">
+                    <stats-card data-background-color="red">
+                      <template slot="header">
+                        <md-icon>money_off</md-icon>
+                      </template>
 
-                    <template slot="content">
-                      <p class="category">Deuda Actual</p>
-                      <h3 class="title">{{this.deudaActual}}</h3>
-                    </template>
-                  </stats-card>
-        
+                      <template slot="content">
+                        <p class="category">Saldo pendiente</p>
+                        <h3 class="title">{{this.deudaActual}}</h3>
+                      </template>
+                    </stats-card>
+                  </div>
+
+                  <div v-if="this.deudaActual > 0">
+                    <stats-card data-background-color="green">
+                      <template slot="header">
+                        <md-icon>attach_money</md-icon>
+                      </template>
+
+                      <template slot="content">
+                        <p class="category">Saldo a favor</p>
+                        <h3 class="title">{{this.deudaActual}}</h3>
+                      </template>
+                    </stats-card>
+                  </div>
 
                 <md-card>
                   <md-card-header data-background-color="orange">
@@ -280,6 +300,7 @@ export default {
         this.newClient.telefono = response.data[0].telefonoCli;
         this.newClient.idZona = response.data[0].idZona;
       });
+      this.reportDialog = false
       this.isEdit = true
       this.showDialog = true
     },
@@ -369,6 +390,7 @@ export default {
       this.cleanClient()
     },
     openDialog(){
+      this.reportDialog = false
       this.cleanClient()
       this.isEdit = false
       this.showDialog = true

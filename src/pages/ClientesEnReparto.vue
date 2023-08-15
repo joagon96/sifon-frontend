@@ -481,13 +481,10 @@ export default {
       const com20 = parseInt(this.newlineareparto.com20) || 0;
       const comSoda = parseInt(this.newlineareparto.comSoda) || 0;
       this.totalAPagar = com12 * this.valor12L + com20 * this.valor20L + comSoda * this.valorSoda + this.newlineareparto.deuda;
+      this.updateFiado()
     },
     updateFiado() {
-      if (this.totalAPagar < 0) {
-        this.newlineareparto.fiado = this.totalAPagar - (-this.newlineareparto.pago)
-      } else {
         this.newlineareparto.fiado = this.totalAPagar - this.newlineareparto.pago
-      };
     },
     getProductos() {
       axios.get(Config.API_URL + 'get/Producto',{headers: {"Authorization": localStorage.token}}).then(response => {
@@ -708,7 +705,9 @@ export default {
         const com12 = response.data[0].com12
         const com20 = response.data[0].com20
         const comSoda = response.data[0].comSoda
-        if (com12 + com20 + comSoda == 0){
+        const pago = response.data[0].pago
+        const fiado = response.data[0].fiado
+        if ((com12 + com20 + comSoda == 0) && pago == 0 && fiado == 0){
           this.showSnackbar = true
           return
         }else{
