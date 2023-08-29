@@ -46,7 +46,7 @@ export default {
   props: {
     title: {
       type: String,
-      default: "de los MANANTIALES"
+      default: "SIFON Systems"
     },
     backgroundImage: {
       type: String,
