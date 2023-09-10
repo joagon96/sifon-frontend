@@ -68,6 +68,7 @@
         </div>
       </div>
 
+      <!-- Agregar Cliente -->
       <div>
         <md-dialog :md-active.sync="showDialog" style="z-index: 5;">
           <md-dialog-title>Agregar cliente</md-dialog-title>
@@ -108,6 +109,7 @@
         </md-dialog>
       </div>
 
+      <!-- reparto -->
       <div>
         <md-dialog :md-active.sync="showEditDialog" style="z-index: 5;">
           <div class="md-layout-item md-small-size-100 md-size-100" v-if="this.wanrningDueda">
@@ -184,7 +186,8 @@
                 </md-field>
               </div>
               <div class="md-layout-item md-size-100" style="padding-bottom: 20px; padding-top: 20px;">
-                  <label style="font-size: 20px;">Total a pagar {{ this.totalAPagar }}<md-icon>attach_money</md-icon></label>
+                  <label style="font-size: 20px;">Total a pagar {{ this.totalAPagar }}<md-icon>attach_money</md-icon></label> <br>
+                  <span style="font-size: 14px;">deuda:{{this.newlineareparto.deuda}} &nbsp;&nbsp; pago:{{ this.pago }}</span>
               </div>
               <div class="md-layout-item md-size-50">
                 <md-field>
@@ -215,6 +218,7 @@
         </md-dialog>
       </div>
 
+      <!-- confirmacion -->
       <div>
         <md-dialog-confirm
           :md-active.sync="showFinDialog"
@@ -226,6 +230,7 @@
           @md-confirm="finishReparto()" />
       </div>
 
+      <!-- deuda -->
       <div>
         <md-dialog :md-active.sync="showDeudaDialog" style="z-index: 5;">
           <md-dialog-title>Deuda cliente {{this.deuda.cliente}}</md-dialog-title>
@@ -260,6 +265,7 @@
         </md-dialog>
       </div>
 
+      <!-- resumen -->
       <div>
         <md-dialog :md-active.sync="showResumenDialog" style="z-index: 5;">
           <md-dialog-title>Resumen</md-dialog-title>
@@ -373,7 +379,7 @@ export default {
         devSoda:null,
         pago: null,
         fiado: null,
-        observacion: null,
+        observacion: "",
         deuda: null,
       },
       deuda:{
@@ -437,6 +443,7 @@ export default {
       resumenName: 'Resumen de Reparto en curso zona' + this.$route.params.zonaSelected + ' ' + moment(Date.now()).format("DD-MM-YYYY"),
       wanrningDueda: false,
       warningAFavor: false,
+      pago: 0,
       totalAPagar: 0,
       productos: [],
       valor12L: 0,
@@ -480,7 +487,8 @@ export default {
       const com12 = parseInt(this.newlineareparto.com12) || 0;
       const com20 = parseInt(this.newlineareparto.com20) || 0;
       const comSoda = parseInt(this.newlineareparto.comSoda) || 0;
-      this.totalAPagar = com12 * this.valor12L + com20 * this.valor20L + comSoda * this.valorSoda + this.newlineareparto.deuda;
+      this.pago = com12 * this.valor12L + com20 * this.valor20L + comSoda * this.valorSoda;
+      this.totalAPagar = this.pago + this.newlineareparto.deuda;
       this.updateFiado()
     },
     updateFiado() {

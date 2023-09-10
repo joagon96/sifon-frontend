@@ -1,12 +1,60 @@
 <template>
     <div class="content">
         <div class="md-layout">
+          <div class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-33">
+              <stats-card data-background-color="blue">
+                <template slot="header">
+                    <md-icon>local_shipping</md-icon>
+                </template>
+
+                <template slot="content">
+                  <p class="category">Cantidad de Repartos</p>
+                  <h3 class="title"> {{ this.repartosTotal }}</h3>
+                </template>
+              </stats-card>
+            </div>
+
+          <div class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-33">
+              <stats-card data-background-color="green">
+                <template slot="header">
+                    <md-icon>attach_money</md-icon>
+                </template>
+
+                <template slot="content">
+                  <p class="category">Recaudacion Total</p>
+                  <h3 class="title"> {{ this.recaudacionTotal }} $</h3>
+                </template>
+              </stats-card>
+            </div>
+
+            <div class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-33">
+              <stats-card data-background-color="red">
+                <template slot="header">
+                    <md-icon>money_off</md-icon>
+                </template>
+
+                <template slot="content">
+                  <p class="category">Fiado Total</p>
+                  <h3 class="title"> {{ this.fiadoTotal }} $</h3>
+                </template>
+              </stats-card>
+            </div>
+
             <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100">
             <md-card>
                 <md-card-header data-background-color="green">
                   <div class="md-size-80">  
                     <h4 class="title md-size-80">Histórico Repartos
+                      <md-button class="md-raised md-info md-size-10" style="float: right; margin-left: 20px; margin-top: 10px" @click="getHistorico()"><md-icon>refresh</md-icon></md-button>
                       <md-button class="md-raised md-info md-size-20" style="float: right; margin-top: 10px" @click="showSearchDialog()"><md-icon>tune</md-icon> Filtros</md-button>
+                      <download-excel style="float: right; margin-right: 20px;"
+                        :data   = "this.repartos"
+                        :fields = "repartosFields"
+                        :name = "repartosName">
+                        <md-button class="md-button md-info md-raised" style="margin-top: 10px">
+                          <md-icon>download</md-icon>
+                        </md-button>
+                      </download-excel>
                     </h4>
                   </div>
                 </md-card-header>
@@ -19,6 +67,8 @@
                         <md-table-cell md-label="Día">{{ item.dia }}</md-table-cell>
                         <md-table-cell md-label="Repartidor">{{ item.repartidor }}</md-table-cell>
                         <md-table-cell md-label="Fecha">{{ dateTime(item.fecha) }}</md-table-cell>
+                        <md-table-cell md-label="Recaudado">{{ item.recaudado }} $</md-table-cell>
+                        <md-table-cell md-label="Fiado">{{ item.fiado }} $</md-table-cell>
                         <md-table-cell md-label="Acciones">
                           <div>
                             <md-button @click="showClientes(item)" class="md-icon-button md-fab md-info md-raised">
@@ -85,6 +135,10 @@ import {Config} from '../config.js'
 import moment from 'moment';
 require('moment/locale/es')
 
+import {
+  StatsCard,
+} from "@/components";
+
 
 export default {
   mounted() {
@@ -92,6 +146,9 @@ export default {
     this.getZonas()
     this.getRepartidores()
   },
+  components: {
+    StatsCard,
+  },  
   data() {
     return {
       repartos: [],
@@ -112,7 +169,19 @@ export default {
         dia: '',
         repartidor: '',
         fecha: '',
-      }
+      },
+      recaudacionTotal: 0,
+      fiadoTotal: 0,
+      repartosTotal: 0,
+      repartosFields:{
+        'Zona': 'zona',
+        'Dia': 'dia',
+        'Repartidor': 'repartidor',
+        'Fecha': 'fecha',
+        'Recaudado': 'recaudado',
+        'Fiado': 'fiado',
+      },
+      repartosName: 'Repartos' + moment(Date.now()).format("DD-MM-YYYY"),
     };
   },
   methods: {
@@ -135,7 +204,18 @@ export default {
     getHistorico () {
       axios.post(Config.API_URL + 'search/historico',{headers: {"Authorization": localStorage.token}}).then(response => {
       this.repartos = response.data;
+      this.getMetricas()
       });
+    },
+    getMetricas(){
+      this.recaudacionTotal = 0;
+      this.fiadoTotal = 0;
+      this.repartosTotal = 0;
+      for (let i = 0; i < this.repartos.length; i++ ) {
+        this.recaudacionTotal += this.repartos[i].recaudado;
+        this.fiadoTotal += this.repartos[i].fiado;
+        this.repartosTotal ++
+      }
     },
     dateTime(value) {
       return moment(value).format("DD MMMM YYYY");
@@ -172,6 +252,7 @@ export default {
       }).then(response => {
         this.searchDialog = false
         this.repartos = response.data;
+        this.getMetricas()
       });
     },
     cleanSearch(){
