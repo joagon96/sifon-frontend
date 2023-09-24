@@ -55,7 +55,7 @@ const routes = [
         props: true,
         component: ClientesEnReparto,
         beforeEnter (to, from, next) {
-          if (!isValidJwt(localStorage.token) || !isAdmin(localStorage.role)) {
+          if (!isValidJwt(localStorage.token)) {
             next('/login')
           } else {
             next()
