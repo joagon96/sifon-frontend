@@ -139,7 +139,7 @@
 
                 <div class="md-layout-item md-medium-size-50 md-xsmall-size-100 md-size-50">
 
-                  <div v-if="this.deudaActual < 0">
+                  <div v-if="this.deudaActual > 0">
                     <stats-card data-background-color="red">
                       <template slot="header">
                         <md-icon>money_off</md-icon>
@@ -152,7 +152,7 @@
                     </stats-card>
                   </div>
 
-                  <div v-if="this.deudaActual > 0">
+                  <div v-if="this.deudaActual < 0">
                     <stats-card data-background-color="green">
                       <template slot="header">
                         <md-icon>attach_money</md-icon>
